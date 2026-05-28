@@ -107,26 +107,41 @@ void registerUser(){
     cout << "\n== Register New Customer ==" << endl;
     cout << "Enter username: ";
     cin >> u;
-    cout << endl << "Enter password: ";
+    cout << "Enter password: ";
     cin >> p;
+    cout << endl;
+
+    // Check if username already exists
+    string fu, fp, frole;
+    ifstream checkFile("Customer.txt");
+    while(getline(checkFile, fu, '|') && getline(checkFile, fp, '|') && getline(checkFile, frole)){
+        if(u == fu)
+        {
+            cout << "Username already exists! Please choose another." << endl << endl;
+            checkFile.close();
+            return;
+        }
+    }
+    checkFile.close();
 
     // Dynamically allocate a new User object
     User* newUser = new User(u, p); // Create a new User with username and password
-    ofstream file("Customer.txt", ios::app);
+    ofstream file("Customer.txt", ios::app); // append mode, 加在后面不会覆盖内容
     file << newUser->getUsername() << "|" << newUser->getPassword() << "|Customer" << endl;
     file.close();
     delete newUser; // Free memory after use
 
-    cout << "Customer registered successfully!" << endl;
+    cout << "Customer registered successfully!" << endl << endl;
 }
 
 string loginUser(){
     string u, p, fu,fp, frole; // fu = file username, fp = file password, frole = file role
-    cout << "\n == Customer Login ==" << endl;
+    cout << "\n== Customer Login ==" << endl;
     cout << "Enter username: ";
     cin >> u;
-    cout << endl << "Enter password: ";
+    cout << "Enter password: ";
     cin >> p;
+    cout << endl;
 
     ifstream file("Customer.txt");
     // getline(自己取的file name, 读出来的资料存去哪个变量, 遇到什么stop)
@@ -149,8 +164,9 @@ string loginAdmin(){
     cout << "\n== Admin Login ==" << endl;
     cout << "Enter username: ";
     cin >> u;
-    cout << endl << "Enter password: ";
+    cout << "Enter password: ";
     cin >> p;
+    cout << endl;
 
     ifstream file("Admin.txt");
     while(getline(file, fu,'|') && getline(file, fp, '|') && getline(file, frole)){
@@ -168,7 +184,7 @@ string loginAdmin(){
 }
 
 void logout(){
-    cout << "\nLogging out... Goodbye!" << endl;
+    cout << "\nLogging out... Goodbye!" << endl <<endl;
 }
 
 void customerMenu(string username){
@@ -180,7 +196,7 @@ void customerMenu(string username){
         cout << "3. Search Book" << endl; // Zhong Bao part
         cout << "4. Display Books" << endl; // Yvonne part
         cout << "5. View Borrowing Summary" << endl; // Tsui Hern part
-        cout << "0. Logout" << endl;
+        cout << "0. Logout" << endl << endl;
         cout << "Enter your choice: ";
         cin >> choice;
     } while(choice != 0);
@@ -199,7 +215,7 @@ void adminMenu(string username){
         cout << "5. Sort Books" << endl; // Zhong Bao part
         cout << "6. Display Books" << endl; // Yvonne part
         cout << "7. Generate Reports" << endl; // Tsui Hern part
-        cout << "0. Logout" << endl;
+        cout << "0. Logout" << endl << endl;
         cout << "Enter your choice: ";
         cin >> choice;
     } while(choice != 0);
@@ -210,13 +226,13 @@ void adminMenu(string username){
 int main() {
     int choice;
     do {
-        cout << endl << "=================================";
-        cout << endl << "=  Library Book Records System  =";
-        cout << endl << "=================================" << endl;
+        cout << "=================================" << endl;
+        cout << "=  Library Book Records System  =" << endl;
+        cout << "=================================" << endl;
         cout << "1. Customer Login" << endl;
         cout << "2. Customer Register" << endl;
         cout << "3. Admin Login" << endl;
-        cout << "0. Exit" << endl;
+        cout << "0. Exit" << endl << endl;
         cout << "Enter choice: ";
         cin >> choice;
 
@@ -233,7 +249,7 @@ int main() {
 
                 } catch(const char* e){
                     // Catch the error and display the error message
-                    cout << "Error: " << e << endl;
+                    cout << "Error: " << e << endl << endl;
                 }
                 
                 break;
@@ -254,7 +270,7 @@ int main() {
                     }
                     adminMenu(loggedIn);
                 } catch(const char* e){
-                    cout << "Error: " << e << endl; 
+                    cout << "Error: " << e << endl << endl; 
                 }
 
                 break;
