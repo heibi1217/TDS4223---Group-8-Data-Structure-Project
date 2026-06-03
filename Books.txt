@@ -1,0 +1,50 @@
+1|The Devotion of Suspect X|Higashino Keigo|Mystery|2005|2|Available
+2|Salvation of a Saint|Higashino Keigo|Mystery|2008|1|Available
+3|Journey Under the Midnight Sun|Higashino Keigo|Mystery|1999|1|Available
+4|Malice: A Mystery|Higashino Keigo|Mystery|1996|2|Available
+5|Forbidden Magic|Higashino Keigo|Mystery|2012|1|Available
+6|Omniscient Reader's Viewpoint 1|sing N song|Fantasy|2021|1|Available
+7|Omniscient Reader's Viewpoint 2|sing N song|Fantasy|2021|1|Available
+8|Omniscient Reader's Viewpoint 3|sing N song|Fantasy|2022|1|Available
+9|Omniscient Reader's Viewpoint 4|sing N song|Fantasy|2022|1|Available
+10|Omniscient Reader's Viewpoint 5|sing N song|Fantasy|2022|1|Available
+11|Omniscient Reader's Viewpoint 6|sing N song|Fantasy|2022|1|Available
+12|Omniscient Reader's Viewpoint 7|sing N song|Fantasy|2023|1|Available
+13|Omniscient Reader's Viewpoint 8|sing N song|Fantasy|2023|1|Available
+14|Omniscient Reader's Viewpoint 9|sing N song|Fantasy|2023|1|Available
+15|Omniscient Reader's Viewpoint 10|sing N song|Fantasy|2023|1|Available
+16|Omniscient Reader's Viewpoint 11|sing N song|Fantasy|2024|1|Available
+17|Omniscient Reader's Viewpoint 12|sing N song|Fantasy|2024|1|Available
+18|Re:Zero -Starting Life in Another World 1|Nagatsuki Tappei|Dark Fantasy|2014|1|Available
+19|Re:Zero -Starting Life in Another World 2|Nagatsuki Tappei|Dark Fantasy|2014|1|Available
+20|Re:Zero -Starting Life in Another World 3|Nagatsuki Tappei|Dark Fantasy|2014|1|Available
+21|Re:Zero -Starting Life in Another World 4|Nagatsuki Tappei|Dark Fantasy|2014|1|Available
+22|Re:Zero -Starting Life in Another World 5|Nagatsuki Tappei|Dark Fantasy|2014|1|Available
+23|Re:Zero -Starting Life in Another World 6|Nagatsuki Tappei|Dark Fantasy|2015|1|Available
+24|Re:Zero -Starting Life in Another World 7|Nagatsuki Tappei|Dark Fantasy|2015|1|Available
+25|Re:Zero -Starting Life in Another World 8|Nagatsuki Tappei|Dark Fantasy|2016|1|Available
+26|Re:Zero -Starting Life in Another World 9|Nagatsuki Tappei|Dark Fantasy|2016|1|Available
+27|Re:Zero -Starting Life in Another World 10|Nagatsuki Tappei|Dark Fantasy|2016|1|Available
+28|Re:Zero -Starting Life in Another World 11|Nagatsuki Tappei|Dark Fantasy|2016|1|Available
+29|Re:Zero -Starting Life in Another World 12|Nagatsuki Tappei|Dark Fantasy|2017|1|Available
+30|Re:Zero -Starting Life in Another World 13|Nagatsuki Tappei|Dark Fantasy|2017|1|Available
+31|Re:Zero -Starting Life in Another World 14|Nagatsuki Tappei|Dark Fantasy|2017|1|Available
+32|Re:Zero -Starting Life in Another World 15|Nagatsuki Tappei|Dark Fantasy|2017|1|Available
+33|
+34|
+35|
+36|
+37|
+38|
+39|
+40|
+41|
+42|
+43|
+44|
+45|
+46|
+47|
+48|
+49|
+50|
