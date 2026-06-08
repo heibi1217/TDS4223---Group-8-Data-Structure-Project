@@ -409,25 +409,15 @@ void customerMenu(string username){
 
         switch(choice) {
         	case 1:
-<<<<<<< HEAD
+                borrowBook(username);
         		break;
-        	
+                
         	case 2:
+                returnBook(username);
         		break;
         	
         	case 3:
         		searchBook(username, false);
-=======
-        		borrowBook(username);
-        		break;
-        	
-        	case 2:
-        		returnBook(username);
-        		break;
-        	
-        	case 3:
-        		searchBook();
->>>>>>> 07f33b8690c0eae95021a8178a43d4c41d7233b9
         		break;
         	
         	case 4:
