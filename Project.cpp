@@ -31,6 +31,55 @@ struct BookRecord {
     string borrowStatus;
 };
 
+class ADTqueue
+{
+    private:
+        string queue[10];
+        int head, tail;
+    
+    public:
+        ADTqueue(){
+            tail = -1;
+            head = 0;
+        }
+
+        int empty(){
+            if (head == tail + 1)
+               return 1;
+            else
+               return 0;
+        }
+
+        int full(){
+            if (tail == 9)
+               return 1;
+            else
+               return 0;
+        }
+
+        void append(string item){
+            if (!full()){
+                tail++;
+                queue[tail] = item;
+            }
+            else{
+                cout<<"Queue is Full"<<endl;
+            }
+        }
+
+        string serve(){
+            if (!empty()){
+                item = queue[head];
+                head++;
+                return item;
+            }
+            else{
+                cout<<"Queue is Empty"<<endl;
+                return "";
+            }
+        }
+};
+
 class Account {
     protected:
         string username;
@@ -192,6 +241,159 @@ void logout(){
     cout << "\nLogging out... Goodbye!" << endl <<endl;
 }
 
+// 1. Borrow Book
+void borrowBook(string currentCustomer){
+    cin.ignore(); //Clear input buffer to prevent skipping inputs
+    cout<<"\n== Borrow Book ==" <<endl;
+
+    //Load all books from file
+    int size = 0;
+    Book* bookList = loadBooks(size);
+
+    if(size == 0 || bookList == nullptr){
+        cout<<"No books available in the library."<<endl;
+        return;
+    }
+
+    string id;
+    cout<<"Enter Book ID to borrow: ";
+    cin>>id;
+
+    bool found = false;
+    for(int i =0; i<size; i++){
+        if(bookList[i].bookID ==id){
+            found = true;
+
+            //Check stock available
+            if(bookList[i].stock > 0){
+                bookList[i].stock--; //Deduct stock quantity
+
+                //If stock 0, update status to borrowed
+                if(bookList[i].stock == 0){
+                    bookList[i].status = "Borrowed";
+                }
+                
+                //Queue processing
+                ADTqueue borrowQueue;
+                borrowQueue.append(currentCustomer); 
+
+                //queue serve to complete processing
+                string processingUser = borrowQueue.serve();
+
+                //Wrte transaction borrowing history record file
+                ofstream recordFile("BorrowRecords.txt", ios::app);
+                recordFile << "BR" << bookList[i].year << id << "|"
+                           << processingUser << "|"
+                           << bookList[i].bookID << "|"
+                           << "2026-06-07|---|Borrowed" << endl;
+                recordFile.close();
+
+                cout << "Book'" << bookList[i].title << "' borrowed successfully by " << processingUser << "!" <<endl;
+            }else{
+                cout<<"Sorry, this book is out of stock!" << endl;
+            }
+            break;
+            }
+        }
+        
+        if(found){
+            saveBooks(bookList, size); //Save updated stock details
+        }else{
+            cout << "Book ID not found." << endl;
+        }
+
+        delete[] bookList; 
+    }
+
+//2.Return Book
+void returnBook(string currentCustomer){
+    cin.ignore(); 
+    cout << "\n=== Return Book ===" << endl;
+
+    string id;
+    cout << "Enter Book ID to return: ";
+    cin >> id;
+
+    //Load book update stock
+    int size = 0;
+    Book* bookList = loadBooks(size);
+    bool bookFound = false;
+
+    for (int i=0; i<size; i++){
+        if (bookList[i].bookID ==id){
+            bookList[i].stock++; //Restock book
+            bookList[i].status = "Available"; 
+            bookFound = true;
+            break;
+
+        }
+    }
+
+    if(!bookFound){
+        cout << "This book was not found in library system." << endl;
+        if(bookList != nullptr) delete[] bookList;
+        return;
+    }
+
+    //Read borrowing logs to process the return transaction
+    ifstream readFile("BorrowRecords.txt");
+    if(!readFile.is_open()){
+        cout << "No borrowing records found." << endl;
+        delete[] bookList;
+        return;
+    }
+
+    ofstream tempFile("TempRecords.txt");
+    string bID, custID, bkID, bDate, rDate, bStatus; //booking, customerID, bookID, borrowDate, returnDate, borrowStatus
+    bool recordUpdated = false;
+
+    //Queue processing for update records sequentially
+    ADTqueue returnQueue;
+
+    while (getline(readFile, bID, '|') && getline(readFile, custID, '|') &&
+           getline(readFile, bkID, '|') && getline(readFile, bDate, '|') &&
+           getline(readFile, rDate, '|') && getline(readFile, bStatus)){
+
+            if(custID == currentCustomer && bkID == id && bStatus == "Borrowed" && !recordUpdated){
+                returnQueue.append(custID); //Add request returning
+                string processingCust = returnQueue.serve(); //Process item
+
+                tempFile << bID << "|" <<processingCust << "|" << bkID << "|" << 
+                bDate << "|2026-06-14|Returned" <<endl;
+                recordUpdated = true;
+            }else{
+                tempFile << bID << "|" << custID << "|" << bkID << "|" << 
+                bDate << "|" << rDate << "|" << bStatus <<endl;
+            }
+        }
+
+        readFile.close();
+        tempFile.close();
+
+        //Replace old record file with updated record
+        remove("BorrowRecords.txt");
+        rename("TempRecords.txt", "BorrowRecords.txt");
+
+        if(recordUpdated){
+            saveBooks(bookList, size); //Save book update
+            cout << "Book returned successfully! Thank you, " << currentCustomer << "!" << endl;
+        }else{
+            cout << "You have not borrowed this book or it was already returned." << endl;
+            for (int i=0; i<size; i++){
+                if(bookList[i].bookID == id){
+                    bookList[i].stock--; //Revert stock update
+                    if(bookList[i].stock == 0){
+                        bookList[i].status = "Borrowed";
+                    }
+                    break;
+                }
+            }
+            saveBooks(bookList, size); //Save reverted stock update
+        }
+        delete[] bookList; //Free memory
+}
+
+        
 void customerMenu(string username){
     int choice;
     do{
@@ -207,6 +409,7 @@ void customerMenu(string username){
 
         switch(choice) {
         	case 1:
+<<<<<<< HEAD
         		break;
         	
         	case 2:
@@ -214,6 +417,17 @@ void customerMenu(string username){
         	
         	case 3:
         		searchBook(username, false);
+=======
+        		borrowBook(username);
+        		break;
+        	
+        	case 2:
+        		returnBook(username);
+        		break;
+        	
+        	case 3:
+        		searchBook();
+>>>>>>> 07f33b8690c0eae95021a8178a43d4c41d7233b9
         		break;
         	
         	case 4:
