@@ -14,6 +14,8 @@ void searchBook(string username, bool isAdmin);
 void sortBooks();
 void borrowBook(string currentCustomer);
 void returnBook(string currentCustomer);
+void generateReport();
+void viewReport();
 int  countBooksInFile();
 
 struct Book {
@@ -436,6 +438,120 @@ void returnBook(string currentCustomer) {
     delete[] bookList;
 }
 
+
+// -------------------------------------------------------
+// Report Generation and TXT File Management (Tsui Hern's part)
+// -------------------------------------------------------
+void generateReport() {
+    try {
+        int totalBooks = countBooksInFile();
+        int availableBooks = 0;
+        int borrowedBooksByStock = 0;
+        int totalCustomers = 0;
+        int totalBorrowRecords = 0;
+        int activeBorrowRecords = 0;
+        int returnedRecords = 0;
+
+        int size = 0;
+        Book* bookList = loadBooks(size);
+
+        for (int i = 0; i < size; i++) {
+            if (bookList[i].stock > 0) {
+                availableBooks++;
+            } else {
+                borrowedBooksByStock++;
+            }
+        }
+
+        if (bookList != nullptr) {
+            delete[] bookList;
+        }
+
+        ifstream customerFile("Customer.txt");
+        if (customerFile.is_open()) {
+            string line;
+            while (getline(customerFile, line)) {
+                if (line != "") {
+                    totalCustomers++;
+                }
+            }
+            customerFile.close();
+        }
+
+        ifstream borrowFile("BorrowRecords.txt");
+        if (borrowFile.is_open()) {
+            string bID, custID, bkID, bDate, rDate, bStatus;
+            while (getline(borrowFile, bID, '|') && getline(borrowFile, custID, '|') &&
+                   getline(borrowFile, bkID, '|') && getline(borrowFile, bDate, '|') &&
+                   getline(borrowFile, rDate, '|') && getline(borrowFile, bStatus)) {
+                totalBorrowRecords++;
+                if (bStatus == "Borrowed") {
+                    activeBorrowRecords++;
+                } else if (bStatus == "Returned") {
+                    returnedRecords++;
+                }
+            }
+            borrowFile.close();
+        }
+
+        ofstream reportFile("Report.txt");
+        if (!reportFile.is_open()) {
+            throw "Unable to create Report.txt";
+        }
+
+        reportFile << "========== LIBRARY BOOK RECORDS REPORT ==========" << endl;
+        reportFile << "Total Books              : " << totalBooks << endl;
+        reportFile << "Available Book Titles    : " << availableBooks << endl;
+        reportFile << "Unavailable Book Titles  : " << borrowedBooksByStock << endl;
+        reportFile << "Total Customers          : " << totalCustomers << endl;
+        reportFile << "Total Borrow Records     : " << totalBorrowRecords << endl;
+        reportFile << "Active Borrow Records    : " << activeBorrowRecords << endl;
+        reportFile << "Returned Records         : " << returnedRecords << endl;
+        reportFile << "=================================================" << endl;
+        reportFile << "Report generated and saved successfully." << endl;
+        reportFile.close();
+
+        cout << "\n========== LIBRARY BOOK RECORDS REPORT ==========" << endl;
+        cout << "Total Books              : " << totalBooks << endl;
+        cout << "Available Book Titles    : " << availableBooks << endl;
+        cout << "Unavailable Book Titles  : " << borrowedBooksByStock << endl;
+        cout << "Total Customers          : " << totalCustomers << endl;
+        cout << "Total Borrow Records     : " << totalBorrowRecords << endl;
+        cout << "Active Borrow Records    : " << activeBorrowRecords << endl;
+        cout << "Returned Records         : " << returnedRecords << endl;
+        cout << "=================================================" << endl;
+        cout << "Report saved successfully into Report.txt" << endl;
+    }
+    catch (const char* msg) {
+        cout << "Error: " << msg << endl;
+    }
+    catch (...) {
+        cout << "Error: Report generation failed." << endl;
+    }
+}
+
+void viewReport() {
+    try {
+        ifstream reportFile("Report.txt");
+        if (!reportFile.is_open()) {
+            throw "No report found. Please ask Admin to generate the report first.";
+        }
+
+        string line;
+        cout << "\n=== Saved Library Report ===" << endl;
+        while (getline(reportFile, line)) {
+            cout << line << endl;
+        }
+        reportFile.close();
+    }
+    catch (const char* msg) {
+        cout << "Error: " << msg << endl;
+    }
+    catch (...) {
+        cout << "Error: Unable to read Report.txt" << endl;
+    }
+}
+
 // -------------------------------------------------------
 // Customer and Admin menus
 // -------------------------------------------------------
@@ -457,7 +573,7 @@ void customerMenu(string username) {
             case 2: returnBook(username); break;
             case 3: searchBook(username, false); break;
             case 4: displayBooks(); break;
-            case 5: break;  // Tsui Hern's part
+            case 5: viewReport(); break;  // Tsui Hern's part
             case 0: break;
             default: cout << "\nInvalid choice. Please try again." << endl;
         }
@@ -488,7 +604,7 @@ void adminMenu(string username) {
             case 4: searchBook(username, true); break;
             case 5: sortBooks(); break;
             case 6: displayBooks(); break;
-            case 7: break;  // Tsui Hern's part
+            case 7: generateReport(); break;  // Tsui Hern's part
             case 0: break;
             default: cout << "\nInvalid choice. Please try again." << endl;
         }
