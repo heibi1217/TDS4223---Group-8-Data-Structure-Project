@@ -1,6 +1,6 @@
 1|The Devotion of Suspect X|Higashino Keigo|Mystery|2005|2|Available
 2|Salvation of a Saint|Higashino Keigo|Mystery|2008|1|Available
-3|Journey Under the Midnight Sun|Higashino Keigo|Mystery|1999|1|Available
+3|Journey Under the Midnight Sun|Higashino Keigo|Mystery|1999|0|Borrowed
 4|Malice: A Mystery|Higashino Keigo|Mystery|1996|2|Available
 5|Forbidden Magic|Higashino Keigo|Mystery|2012|1|Available
 6|Omniscient Reader's Viewpoint 1|sing N song|Metafiction|2021|1|Available
@@ -41,7 +41,7 @@
 41|The Shining|Stephen Edwin King|Horror|1977|2|Available
 42|Blackwater|Michael McDowell|Horror|1983|2|Available
 43|My Happy Marriage|Agitogi Akumi|Romance|2019|1|Available
-44|The Tale of the Bamboo Cutter|Unknown|Monogatari|Unknown|1|Available
+44|The Tale of the Bamboo Cutter|Unknown|Monogatari|0|1|Available
 45|Cosmic Princess Kaguya! Novelisation|Kiriyama Naruto|Sci-Fi|2026|1|Available
 46|Pantai Kasih|Azmah Nordin|Social|1994|1|Available
 47|Sword Art Online Mother's Rosario|Kawahara Reki|Sci-Fi|2011|1|Available
