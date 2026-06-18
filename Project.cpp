@@ -78,9 +78,7 @@ struct BookRecord {
     string borrowStatus;
 };
 
-// -------------------------------------------------------
 // ADT Queue - used in borrow and return book
-// -------------------------------------------------------
 class ADTqueue {
     private:
         string queue[10];
@@ -126,7 +124,7 @@ class ADTqueue {
 
 // -------------------------------------------------------
 // Linked Stack - keeps the books an admin deletes so the
-// most recent deletion can be undone (last in, first out).
+// most recent deletion can be undone (LIFO).
 // -------------------------------------------------------
 struct StackNode {
     Book data;
@@ -805,12 +803,12 @@ void showHelp() {
 // a short banner shown once when the program starts
 void showWelcomeBanner() {
     cout << "*********************************************" << endl;
-    cout << "*      Group 8 - Library Book Records      *" << endl;
-    cout << "*   Data Structure and Algorithms Project  *" << endl;
+    cout << "*      Group 8 - Library Book Records       *" << endl;
+    cout << "*   Data Structure and Algorithms Project   *" << endl;
     cout << "*********************************************" << endl;
-    cout << "Tip: most menus accept 0 to go back or cancel." << endl;
-    cout << "Customers borrow and return books." << endl;
-    cout << "Admins manage the books, customers and reports." << endl;
+    cout << "Type '0' to go back or cancel." << endl;
+    cout << "Customers : Borrow and return books." << endl;
+    cout << "Admins : Manage books, customers and reports." << endl;
     cout << endl;
 }
 
