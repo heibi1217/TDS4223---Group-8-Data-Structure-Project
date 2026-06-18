@@ -827,9 +827,6 @@ void showWelcomeBanner() {
     cout << "*      Group 8 - Library Book Records       *" << endl;
     cout << "*   Data Structure and Algorithms Project   *" << endl;
     cout << "*********************************************" << endl;
-    cout << "Type '0' to go back or cancel." << endl;
-    cout << "Customers : Borrow and return books." << endl;
-    cout << "Admins : Manage books, customers and reports." << endl;
     cout << endl;
 }
 
