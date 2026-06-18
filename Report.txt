@@ -1,1 +1,12 @@
-No report generated yet.
+========== LIBRARY BOOK RECORDS REPORT ==========
+Total Books              : 52
+Available Book Titles    : 51
+Unavailable Book Titles  : 1
+Total Customers          : 2
+Total Borrow Records     : 3
+Active Borrow Records    : 1
+Returned Records         : 2
+Overdue Records          : 0
+Total Reservations       : 1
+=================================================
+Report generated and saved successfully.

@@ -902,19 +902,23 @@ void addBook() {
     cout << "\n== Add New Book ==" << endl;
     Book newBook;
 
-    cout << "Enter Book ID: ";     cin >> newBook.bookID;
-
-    // make sure the Book ID is not already used by another book
+    // find the largest Book ID already in use and add one,
+    // so the system gives the new book a unique ID by itself
     int existSize = 0;
     Book* existing = loadBooks(existSize);
+    int maxID = 0;
     for (int i = 0; i < existSize; i++) {
-        if (existing[i].bookID == newBook.bookID) {
-            cout << "Book ID already exists! Please use a different ID." << endl;
-            if (existing != nullptr) delete[] existing;
-            return;
+        try {
+            int id = stoi(existing[i].bookID);
+            if (id > maxID) maxID = id;
+        } catch (...) {
+            // skip any book whose ID is not a plain number
         }
     }
     if (existing != nullptr) delete[] existing;
+
+    newBook.bookID = to_string(maxID + 1);
+    cout << "Auto-generated Book ID: " << newBook.bookID << endl;
 
     cin.ignore();
     cout << "Enter Title: ";       getline(cin, newBook.title);
@@ -932,7 +936,17 @@ void addBook() {
          << newBook.status   << endl;
     file.close();
 
-    cout << "Book successfully added!" << endl;
+    // show the full details of the book that was just added
+    cout << "\nBook successfully added!" << endl;
+    cout << "-----------------------------" << endl;
+    cout << "Book ID  : " << newBook.bookID   << endl;
+    cout << "Title    : " << newBook.title    << endl;
+    cout << "Author   : " << newBook.author   << endl;
+    cout << "Category : " << newBook.category << endl;
+    cout << "Year     : " << newBook.year     << endl;
+    cout << "Stock    : " << newBook.stock    << endl;
+    cout << "Status   : " << newBook.status   << endl;
+    cout << "-----------------------------" << endl;
 }
 
 void displayBooks() {
@@ -977,9 +991,22 @@ void editBook() {
         return;
     }
 
+    // show a quick list of ID and title so the admin does not have to guess
+    cout << "\n-- Current Books --" << endl;
+    for (int i = 0; i < size; i++) {
+        cout << left << setw(6) << bookList[i].bookID
+             << bookList[i].title << endl;
+    }
+
     string id;
-    cout << "\nEnter Book ID to edit: ";
+    cout << "\nEnter Book ID to edit (0 to cancel): ";
     cin >> id;
+
+    if (id == "0") {
+        cout << "Edit cancelled." << endl;
+        delete[] bookList;
+        return;
+    }
 
     bool found = false;
     for (int i = 0; i < size; i++) {
@@ -1036,9 +1063,22 @@ void deleteBook() {
         return;
     }
 
+    // show a quick list of ID and title so the admin does not have to guess
+    cout << "\n-- Current Books --" << endl;
+    for (int i = 0; i < size; i++) {
+        cout << left << setw(6) << bookList[i].bookID
+             << bookList[i].title << endl;
+    }
+
     string id;
-    cout << "\nEnter Book ID to delete: ";
+    cout << "\nEnter Book ID to delete (0 to cancel): ";
     cin >> id;
+
+    if (id == "0") {
+        cout << "Delete cancelled." << endl;
+        delete[] bookList;
+        return;
+    }
 
     int deleteIndex = -1;
     for (int i = 0; i < size; i++) {
