@@ -903,6 +903,19 @@ void addBook() {
     Book newBook;
 
     cout << "Enter Book ID: ";     cin >> newBook.bookID;
+
+    // make sure the Book ID is not already used by another book
+    int existSize = 0;
+    Book* existing = loadBooks(existSize);
+    for (int i = 0; i < existSize; i++) {
+        if (existing[i].bookID == newBook.bookID) {
+            cout << "Book ID already exists! Please use a different ID." << endl;
+            if (existing != nullptr) delete[] existing;
+            return;
+        }
+    }
+    if (existing != nullptr) delete[] existing;
+
     cin.ignore();
     cout << "Enter Title: ";       getline(cin, newBook.title);
     cout << "Enter Author: ";      getline(cin, newBook.author);
