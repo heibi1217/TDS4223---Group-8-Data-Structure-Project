@@ -195,6 +195,7 @@ class Account {
         ~Account() {}
 
         friend void displayAccount(const Account& a);
+        friend void displayGuest(const Account& a);
         friend class Admin;
 
         string getUsername() { return username; }
@@ -236,6 +237,17 @@ class Admin : public Account {
         void setPassword(string p) { password = p; }
 };
 
+// a visitor who has not logged in yet (used on the Help / About screen)
+class Guest : public Account {
+    public:
+        Guest() {
+            username = "Visitor";
+            role = "Guest";
+        }
+
+        ~Guest() {}
+};
+
 // -------------------------------------------------------
 // Friend functions - they can reach the protected fields of the
 // account classes to print a short welcome card after login.
@@ -255,6 +267,13 @@ void displayAdmin(const Admin& a) {
     cout << "--------------------------------" << endl;
     cout << " Welcome back, admin " << a.username << endl;
     cout << " Access level: " << a.role << endl;
+    cout << "--------------------------------" << endl;
+}
+
+void displayGuest(const Account& a) {
+    cout << "--------------------------------" << endl;
+    cout << " Hello " << a.username << "!" << endl;
+    cout << " Access level: " << a.role << " (please login for more)" << endl;
     cout << "--------------------------------" << endl;
 }
 
@@ -781,6 +800,8 @@ void adminMenu(string username) {
 
 // a longer help screen the user can open from the main menu
 void showHelp() {
+    Guest visitor;
+    displayGuest(visitor);   // greet the not-logged-in visitor
     cout << "\n=============== HELP / ABOUT ===============" << endl;
     cout << "This is a library book records system." << endl;
     cout << endl;
