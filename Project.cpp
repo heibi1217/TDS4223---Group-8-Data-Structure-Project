@@ -1098,7 +1098,7 @@ void DelBook(){
 	
     if(DelIndex != -1){
         // keep a copy on the stack so the deletion can be undone later
-        deletedBooks.push(bookList[deleteIndex]);
+        deletedBooks.push(bookList[DelIndex]);
 		
         Book* newBookList = new Book[size - 1];
         int j = 0;
@@ -3325,7 +3325,7 @@ void displayBooksFiltered() {
     cin >> choice;
 
     if (choice == 1) {
-        displayBooks();
+        DisBooks();
         return;
     }
 
