@@ -179,184 +179,208 @@ BookStack deletedBooks;
 // -------------------------------------------------------
 // Account base class and subclasses
 // -------------------------------------------------------
-class Account {
-    protected:
-        string username;
-        string password;
-        string role;
+class Account
+{
+	protected:
+		string username;
+		string password;
+		string role;
 
-    public:
-        Account() {
-            username = "";
-            password = "";
-            role = "";
-        }
+	public:
+		Account()
+		{
+			username = "";
+			password = "";
+			role = "";
+		}
 
-        ~Account() {}
+		~Account() {}
 
-        friend void displayAccount(const Account& a);
-        friend void displayGuest(const Account& a);
-        friend class Admin;
+		friend void displayAccount(const Account& a);
+		friend void displayGuest(const Account& a);
+		friend class Admin;
 
-        string getUsername() { return username; }
-        string getPassword() { return password; }
-        string getRole()     { return role; }
+		string getUsername() { return username; }
+		string getPassword() { return password; }
+		string getRole() { return role; }
 };
 
-class User : public Account {
-    public:
-        User() { role = "Customer"; }
+class User : public Account
+{
+	public:
+		User() { role = "Customer"; }
 
-        User(string u, string p) {
-            username = u;
-            password = p;
-            role = "Customer";
-        }
+		User(string u, string p)
+		{
+			username = u;
+			password = p;
+			role = "Customer";
+		}
 
-        ~User() {}
-        friend void displayUser(const User& u);
+		~User() {}
+		friend void displayUser(const User& u);
 
-        void setUsername(string u) { username = u; }
-        void setPassword(string p) { password = p; }
+		void setUsername(string u) { username = u; }
+		void setPassword(string p) { password = p; }
 };
 
-class Admin : public Account {
-    public:
-        Admin() { role = "Admin"; }
+class Admin : public Account
+{
+	public:
+		Admin() { role = "Admin"; }
 
-        Admin(string u, string p) {
-            username = u;
-            password = p;
-            role = "Admin";
-        }
+		Admin(string u, string p)
+		{
+			username = u;
+			password = p;
+			role = "Admin";
+		}
 
-        ~Admin() {}
-        friend void displayAdmin(const Admin& a);
+		~Admin() {}
+		friend void displayAdmin(const Admin& a);
 
-        void setUsername(string u) { username = u; }
-        void setPassword(string p) { password = p; }
+		void setUsername(string u) { username = u; }
+		void setPassword(string p) { password = p; }
 };
 
-// a visitor who has not logged in yet (used on the Help / About screen)
-class Guest : public Account {
-    public:
-        Guest() {
-            username = "Visitor";
-            role = "Guest";
-        }
+// guest is a visitor that has not login yet (used in Help / About)
+class Guest : public Account
+{
+	public:
+		Guest()
+		{
+			username = "Visitor";
+			role = "Guest";
+		}
 
-        ~Guest() {}
+		~Guest() {}
 };
 
-// -------------------------------------------------------
-// Friend functions - they can reach the protected fields of the
-// account classes to print a short welcome card after login.
-// -------------------------------------------------------
-void displayAccount(const Account& a) {
-    cout << "Account : " << a.username << " (" << a.role << ")" << endl;
+// friend functions to print the welcome card after login
+// they can read the protected username and role
+void displayAccount(const Account& a)
+{
+	cout << "Account : " << a.username << " (" << a.role << ")" << endl;
 }
 
-void displayUser(const User& u) {
-    cout << "--------------------------------" << endl;
-    cout << " Welcome back, customer " << u.username << endl;
-    cout << " Access level: " << u.role << endl;
-    cout << "--------------------------------" << endl;
+void displayUser(const User& u)
+{
+	cout << "--------------------------------" << endl;
+	cout << " Welcome back, customer " << u.username << endl;
+	cout << " Access level: " << u.role << endl;
+	cout << "--------------------------------" << endl;
 }
 
-void displayAdmin(const Admin& a) {
-    cout << "--------------------------------" << endl;
-    cout << " Welcome back, admin " << a.username << endl;
-    cout << " Access level: " << a.role << endl;
-    cout << "--------------------------------" << endl;
+void displayAdmin(const Admin& a)
+{
+	cout << "--------------------------------" << endl;
+	cout << " Welcome back, admin " << a.username << endl;
+	cout << " Access level: " << a.role << endl;
+	cout << "--------------------------------" << endl;
 }
 
-void displayGuest(const Account& a) {
-    cout << "--------------------------------" << endl;
-    cout << " Hello " << a.username << "!" << endl;
-    cout << " Access level: " << a.role << " (please login for more)" << endl;
-    cout << "--------------------------------" << endl;
+void displayGuest(const Account& a)
+{
+	cout << "--------------------------------" << endl;
+	cout << " Hello " << a.username << "!" << endl;
+	cout << " Access level: " << a.role << " (please login for more)" << endl;
+	cout << "--------------------------------" << endl;
 }
 
-// -------------------------------------------------------
+// =========================
 // Register / Login / Logout
-// -------------------------------------------------------
-void registerUser() {
-    string u, p;
-    cout << "\n== Register New Customer ==" << endl;
-    cout << "Enter username: ";
-    cin >> u;
-    cout << "Enter password: ";
-    cin >> p;
-    cout << endl;
+// =========================
+void registerUser()
+{
+	string u, p;
+	string fu, fp, frole;
 
-    string fu, fp, frole;
-    ifstream checkFile("Customer.txt");
-    while (getline(checkFile, fu, '|') && getline(checkFile, fp, '|') && getline(checkFile, frole)) {
-        if (u == fu) {
-            cout << "Username already exists! Please choose another." << endl << endl;
-            checkFile.close();
-            return;
-        }
-    }
-    checkFile.close();
+	cout << "\n== Register New Customer ==" << endl;
+	cout << "Enter username: ";
+	cin >> u;
+	cout << "Enter password: ";
+	cin >> p;
+	cout << endl;
 
-    User* newUser = new User(u, p);
-    ofstream file("Customer.txt", ios::app);
-    file << newUser->getUsername() << "|" << newUser->getPassword() << "|Customer" << endl;
-    file.close();
-    delete newUser;
+	// check first so the same username is not used twice
+	ifstream checkFile("Customer.txt");
+	while(getline(checkFile, fu, '|') && getline(checkFile, fp, '|') && getline(checkFile, frole))
+	{
+		if(u == fu)
+		{
+			cout << "Username already exists! Please choose another." << endl << endl;
+			checkFile.close();
+			return;
+		}
+	}
+	checkFile.close();
 
-    cout << "Customer registered successfully!" << endl << endl;
+	User* newUser = new User(u, p);
+	ofstream file("Customer.txt", ios::app);
+	file << newUser->getUsername() << "|" << newUser->getPassword() << "|Customer" << endl;
+	file.close();
+	delete newUser;
+
+	cout << "Customer registered successfully!" << endl << endl;
 }
 
-string loginUser() {
-    string u, p, fu, fp, frole;
-    cout << "\n== Customer Login ==" << endl;
-    cout << "Enter username: ";
-    cin >> u;
-    cout << "Enter password: ";
-    cin >> p;
-    cout << endl;
+string loginUser()
+{
+	string u, p, fu, fp, frole;
 
-    ifstream file("Customer.txt");
-    while (getline(file, fu, '|') && getline(file, fp, '|') && getline(file, frole)) {
-        if (u == fu && p == fp) {
-            file.close();
-            User loggedIn(u, p);
-            displayUser(loggedIn);   // friend function welcome card
-            return u;
-        }
-    }
-    file.close();
-    cout << "Invalid username or password." << endl;
-    return "";
+	cout << "\n== Customer Login ==" << endl;
+	cout << "Enter username: ";
+	cin >> u;
+	cout << "Enter password: ";
+	cin >> p;
+	cout << endl;
+
+	ifstream file("Customer.txt");
+	while(getline(file, fu, '|') && getline(file, fp, '|') && getline(file, frole))
+	{
+		if(u == fu && p == fp)
+		{
+			file.close();
+			User loggedIn(u, p);
+			displayUser(loggedIn); // friend function welcome card
+			return u;
+		}
+	}
+	file.close();
+	cout << "Invalid username or password." << endl;
+	return "";
 }
 
-string loginAdmin() {
-    string u, p, fu, fp, frole;
-    cout << "\n== Admin Login ==" << endl;
-    cout << "Enter username: ";
-    cin >> u;
-    cout << "Enter password: ";
-    cin >> p;
-    cout << endl;
+string loginAdmin()
+{
+	string u, p, fu, fp, frole;
 
-    ifstream file("Admin.txt");
-    while (getline(file, fu, '|') && getline(file, fp, '|') && getline(file, frole)) {
-        if (u == fu && p == fp) {
-            file.close();
-            Admin loggedIn(u, p);
-            displayAdmin(loggedIn);   // friend function welcome card
-            return u;
-        }
-    }
-    file.close();
-    cout << "Invalid username or password." << endl;
-    return "";
+	cout << "\n== Admin Login ==" << endl;
+	cout << "Enter username: ";
+	cin >> u;
+	cout << "Enter password: ";
+	cin >> p;
+	cout << endl;
+
+	ifstream file("Admin.txt");
+	while(getline(file, fu, '|') && getline(file, fp, '|') && getline(file, frole))
+	{
+		if(u == fu && p == fp)
+		{
+			file.close();
+			Admin loggedIn(u, p);
+			displayAdmin(loggedIn); // friend function welcome card
+			return u;
+		}
+	}
+	file.close();
+	cout << "Invalid username or password." << endl;
+	return "";
 }
 
-void logout() {
-    cout << "\nLogging out... Goodbye!" << endl << endl;
+void logout()
+{
+	cout << "\nLogging out... Goodbye!" << endl << endl;
 }
 
 // -------------------------------------------------------
@@ -707,192 +731,209 @@ void viewReport() {
     }
 }
 
-// -------------------------------------------------------
+// =========================
 // Customer and Admin menus
-// -------------------------------------------------------
-void customerMenu(string username) {
-    int choice;
-    do {
-        cout << "\n=== Customer Menu ===" << endl;
-        cout << "1. Borrow Book" << endl;
-        cout << "2. Return Book" << endl;
-        cout << "3. Renew Book" << endl;
-        cout << "4. Reserve Book" << endl;
-        cout << "5. My Reservations" << endl;
-        cout << "6. Search Book" << endl;
-        cout << "7. Display Books" << endl;
-        cout << "8. My Borrow History" << endl;
-        cout << "9. Check My Fines" << endl;
-        cout << "10. My Profile" << endl;
-        cout << "11. View Borrowing Summary" << endl;
-        cout << "0. Logout" << endl << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
+// =========================
+void customerMenu(string username)
+{
+	int choice;
+	do
+	{
+		cout << "\n=== Customer Menu ===" << endl;
+		cout << "1. Borrow Book" << endl;
+		cout << "2. Return Book" << endl;
+		cout << "3. Renew Book" << endl;
+		cout << "4. Reserve Book" << endl;
+		cout << "5. My Reservations" << endl;
+		cout << "6. Search Book" << endl;
+		cout << "7. Display Books" << endl;
+		cout << "8. My Borrow History" << endl;
+		cout << "9. Check My Fines" << endl;
+		cout << "10. My Profile" << endl;
+		cout << "11. View Borrowing Summary" << endl;
+		cout << "0. Logout" << endl << endl;
+		cout << "Enter your choice: ";
+		cin >> choice;
 
-        switch (choice) {
-            case 1: borrowBook(username); break;
-            case 2: returnBook(username); break;
-            case 3: renewBook(username); break;
-            case 4: reserveBook(username); break;
-            case 5: myReservations(username); break;
-            case 6: searchBook(username, false); break;
-            case 7: displayBooksFiltered(); break;
-            case 8: myBorrowHistory(username); break;
-            case 9: checkMyFines(username); break;
-            case 10: myProfile(username); break;
-            case 11: viewReport(); break;  // Tsui Hern's part
-            case 0: break;
-            default: cout << "\nInvalid choice. Please try again." << endl;
-        }
-    } while (choice != 0);
+		switch(choice)
+		{
+			case 1: borrowBook(username); break;
+			case 2: returnBook(username); break;
+			case 3: renewBook(username); break;
+			case 4: reserveBook(username); break;
+			case 5: myReservations(username); break;
+			case 6: searchBook(username, false); break;
+			case 7: displayBooksFiltered(); break;
+			case 8: myBorrowHistory(username); break;
+			case 9: checkMyFines(username); break;
+			case 10: myProfile(username); break;
+			case 11: viewReport(); break; // Tsui Hern's part
+			case 0: break;
+			default: cout << "\nInvalid choice. Please try again." << endl;
+		}
+	} while(choice != 0);
 
-    logout();
+	logout();
 }
 
-void adminMenu(string username) {
-    int choice;
-    do {
-        cout << "\n=== Admin Menu ===" << endl;
-        cout << "1. Add Book" << endl;
-        cout << "2. Edit Book" << endl;
-        cout << "3. Delete Book" << endl;
-        cout << "4. Search Book" << endl;
-        cout << "5. Sort Books" << endl;
-        cout << "6. Display Books" << endl;
-        cout << "7. Manage Customers" << endl;
-        cout << "8. View Borrow Records" << endl;
-        cout << "9. Force Return Book" << endl;
-        cout << "10. Manage Reservations" << endl;
-        cout << "11. Overdue Report" << endl;
-        cout << "12. Book Statistics" << endl;
-        cout << "13. Top Borrowed Books" << endl;
-        cout << "14. Manage Admins" << endl;
-        cout << "15. Undo Last Delete" << endl;
-        cout << "16. Generate Reports" << endl;
-        cout << "0. Logout" << endl << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
+void adminMenu(string username)
+{
+	int choice;
+	do
+	{
+		cout << "\n=== Admin Menu ===" << endl;
+		cout << "1. Add Book" << endl;
+		cout << "2. Edit Book" << endl;
+		cout << "3. Delete Book" << endl;
+		cout << "4. Search Book" << endl;
+		cout << "5. Sort Books" << endl;
+		cout << "6. Display Books" << endl;
+		cout << "7. Manage Customers" << endl;
+		cout << "8. View Borrow Records" << endl;
+		cout << "9. Force Return Book" << endl;
+		cout << "10. Manage Reservations" << endl;
+		cout << "11. Overdue Report" << endl;
+		cout << "12. Book Statistics" << endl;
+		cout << "13. Top Borrowed Books" << endl;
+		cout << "14. Manage Admins" << endl;
+		cout << "15. Undo Last Delete" << endl;
+		cout << "16. Generate Reports" << endl;
+		cout << "0. Logout" << endl << endl;
+		cout << "Enter your choice: ";
+		cin >> choice;
 
-        switch (choice) {
-            case 1: addBook(); break;
-            case 2: editBook(); break;
-            case 3: deleteBook(); break;
-            case 4: searchBook(username, true); break;
-            case 5: sortBooks(); break;
-            case 6: displayBooks(); break;
-            case 7: manageCustomers(); break;
-            case 8: viewBorrowRecords(); break;
-            case 9: forceReturn(); break;
-            case 10: manageReservations(); break;
-            case 11: overdueReport(); break;
-            case 12: bookStatistics(); break;
-            case 13: topBorrowedBooks(); break;
-            case 14: manageAdmins(); break;
-            case 15: restoreLastDeleted(); break;
-            case 16: generateReport(); break;  // Tsui Hern's part
-            case 0: break;
-            default: cout << "\nInvalid choice. Please try again." << endl;
-        }
-    } while (choice != 0);
+		switch(choice)
+		{
+			case 1: addBook(); break;
+			case 2: editBook(); break;
+			case 3: deleteBook(); break;
+			case 4: searchBook(username, true); break;
+			case 5: sortBooks(); break;
+			case 6: displayBooks(); break;
+			case 7: manageCustomers(); break;
+			case 8: viewBorrowRecords(); break;
+			case 9: forceReturn(); break;
+			case 10: manageReservations(); break;
+			case 11: overdueReport(); break;
+			case 12: bookStatistics(); break;
+			case 13: topBorrowedBooks(); break;
+			case 14: manageAdmins(); break;
+			case 15: restoreLastDeleted(); break;
+			case 16: generateReport(); break; // Tsui Hern's part
+			case 0: break;
+			default: cout << "\nInvalid choice. Please try again." << endl;
+		}
+	} while(choice != 0);
 
-    logout();
+	logout();
 }
 
-// a longer help screen the user can open from the main menu
-void showHelp() {
-    Guest visitor;
-    displayGuest(visitor);   // greet the not-logged-in visitor
-    cout << "\n=============== HELP / ABOUT ===============" << endl;
-    cout << "This is a library book records system." << endl;
-    cout << endl;
-    cout << "Customer accounts can:" << endl;
-    cout << " - borrow, renew, return and reserve books" << endl;
-    cout << " - search and browse the book list" << endl;
-    cout << " - view their own history, fines and profile" << endl;
-    cout << endl;
-    cout << "Admin accounts can:" << endl;
-    cout << " - add, edit, delete and sort books" << endl;
-    cout << " - manage customer and admin accounts" << endl;
-    cout << " - handle borrow records and reservations" << endl;
-    cout << " - generate reports and check overdue fines" << endl;
-    cout << endl;
-    cout << "All data is stored in plain text files so it stays" << endl;
-    cout << "consistent between the two modules." << endl;
-    cout << "===========================================" << endl;
+// help / about screen, can be opened from the main menu
+void showHelp()
+{
+	Guest visitor;
+	displayGuest(visitor); // greet the visitor that is not login yet
+
+	cout << "\n=============== HELP / ABOUT ===============" << endl;
+	cout << "This is a library book records system." << endl;
+	cout << endl;
+	cout << "Customer accounts can:" << endl;
+	cout << " - borrow, renew, return and reserve books" << endl;
+	cout << " - search and browse the book list" << endl;
+	cout << " - view their own history, fines and profile" << endl;
+	cout << endl;
+	cout << "Admin accounts can:" << endl;
+	cout << " - add, edit, delete and sort books" << endl;
+	cout << " - manage customer and admin accounts" << endl;
+	cout << " - handle borrow records and reservations" << endl;
+	cout << " - generate reports and check overdue fines" << endl;
+	cout << endl;
+	cout << "All data is stored in plain text files so it stays" << endl;
+	cout << "consistent between the two modules." << endl;
+	cout << "===========================================" << endl;
 }
 
-// a short banner shown once when the program starts
-void showWelcomeBanner() {
-    cout << "*********************************************" << endl;
-    cout << "*      Group 8 - Library Book Records       *" << endl;
-    cout << "*   Data Structure and Algorithms Project   *" << endl;
-    cout << "*********************************************" << endl;
-    cout << endl;
+// banner that shows one time when the program starts
+void showWelcomeBanner()
+{
+	cout << "*********************************************" << endl;
+	cout << "*      Group 8 - Library Book Records       *" << endl;
+	cout << "*   Data Structure and Algorithms Project   *" << endl;
+	cout << "*********************************************" << endl;
+	cout << endl;
 }
 
-// -------------------------------------------------------
+// =========================
 // Main
-// -------------------------------------------------------
-int main() {
-    int choice;
-    showWelcomeBanner();
-    do {
-        cout << "=================================" << endl;
-        cout << "=  Library Book Records System  =" << endl;
-        cout << "=================================" << endl;
-        cout << "1. Customer Login" << endl;
-        cout << "2. Customer Register" << endl;
-        cout << "3. Admin Login" << endl;
-        cout << "4. Help / About" << endl;
-        cout << "0. Exit" << endl << endl;
-        cout << "Enter choice: ";
-        cin >> choice;
+// =========================
+int main()
+{
+	int choice;
+	showWelcomeBanner();
 
-        switch (choice) {
-            case 1: {
-                try {
-                    string loggedIn = loginUser();
-                    if (loggedIn.empty()) throw "Login failed!";
-                    customerMenu(loggedIn);
-                } catch (const char* e) {
-                    cout << "Error: " << e << endl << endl;
-                }
-                break;
-            }
-            case 2: {
-                registerUser();
-                break;
-            }
-            case 3: {
-                try {
-                    string loggedIn = loginAdmin();
-                    if (loggedIn.empty()) throw "Login failed!";
-                    adminMenu(loggedIn);
-                } catch (const char* e) {
-                    cout << "Error: " << e << endl << endl;
-                }
-                break;
-            }
-            case 4: {
-                showHelp();
-                break;
-            }
-            case 0: {
-                logout();
-                break;
-            }
-            default: {
-                cout << "Invalid choice. Please try again." << endl;
-                break;
-            }
-        }
-    } while (choice != 0);
+	do
+	{
+		cout << "=================================" << endl;
+		cout << "=  Library Book Records System  =" << endl;
+		cout << "=================================" << endl;
+		cout << "1. Customer Login" << endl;
+		cout << "2. Customer Register" << endl;
+		cout << "3. Admin Login" << endl;
+		cout << "4. Help / About" << endl;
+		cout << "0. Exit" << endl << endl;
+		cout << "Enter choice: ";
+		cin >> choice;
 
-    cout << "*********************************************" << endl;
-    cout << "*  Thank you for using the Library System  *" << endl;
-    cout << "*               Goodbye!                    *" << endl;
-    cout << "*********************************************" << endl;
-    return 0;
+		if(choice == 1)
+		{
+			// try catch so a failed login does not crash the program
+			try
+			{
+				string loggedIn = loginUser();
+				if(loggedIn.empty()) throw "Login failed!";
+				customerMenu(loggedIn);
+			}
+			catch(const char* e)
+			{
+				cout << "Error: " << e << endl << endl;
+			}
+		}
+		else if(choice == 2)
+		{
+			registerUser();
+		}
+		else if(choice == 3)
+		{
+			try
+			{
+				string loggedIn = loginAdmin();
+				if(loggedIn.empty()) throw "Login failed!";
+				adminMenu(loggedIn);
+			}
+			catch(const char* e)
+			{
+				cout << "Error: " << e << endl << endl;
+			}
+		}
+		else if(choice == 4)
+		{
+			showHelp();
+		}
+		else if(choice == 0)
+		{
+			logout();
+		}
+		else
+		{
+			cout << "Invalid choice. Please try again." << endl;
+		}
+	} while(choice != 0);
+
+	cout << "*********************************************" << endl;
+	cout << "*  Thank you for using the Library System  *" << endl;
+	cout << "*               Goodbye!                    *" << endl;
+	cout << "*********************************************" << endl;
+	return 0;
 }
 
 // -------------------------------------------------------
