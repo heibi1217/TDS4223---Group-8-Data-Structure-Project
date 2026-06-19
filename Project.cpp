@@ -939,15 +939,13 @@ int main()
 	return 0;
 }
 
-// -------------------------------------------------------
-// Add / Display / Edit / Delete Book (Yvonne's part)
-// -------------------------------------------------------
+//Yvonne's part (Add / Display / Edit / Delete Books)
 void AddBook(){
     cout<<"\n== Add New Book =="<<endl;
     Book newBook;
 	
-    // find the largest Book ID already in use and add one,
-    // so the system gives the new book a unique ID by itself
+    //find the largest Book ID already in use and add one,
+    //so the system gives the new book a unique ID by itself
     int existSize = 0;
     Book* existing = LoadBooks(existSize);
     int maxID = 0;
@@ -956,7 +954,7 @@ void AddBook(){
             int id = stoi(existing[i].bookID);
             if (id > maxID) maxID = id;
         } catch(...){
-            // skip any book whose ID is not a plain number
+            //skip any book whose ID is not a plain number
         }
     }
     if(existing != nullptr) delete[] existing;
@@ -980,7 +978,7 @@ void AddBook(){
          <<newBook.status<<endl;
     file.close();
 	
-    // show the full details of the book that was just added
+    //show the full details of the book that was just added
     cout<<"\nBook successfully added!"<<endl;
     cout<< "-----------------------------"<<endl;
     cout<< "Book ID  : "<<newBook.bookID<<endl;
@@ -1002,7 +1000,7 @@ void EditBook(){
         return;
     }
 	
-    // show a quick list of ID and title so the admin does not have to guess
+    //show a quick list of ID and title so the admin does not have to guess
     cout<<"\n-- Current Books --"<<endl;
     for (int i = 0; i < size; i++){
         cout<<left << setw(6)<<bookList[i].bookID
@@ -1073,7 +1071,7 @@ void DelBook(){
         return;
     }
 	
-    // show a quick list of ID and title so the admin does not have to guess
+    //show a quick list of ID and title so the admin does not have to guess
     cout<<"\n-- Current Books --"<<endl;
     for(int i = 0; i < size; i++){
         cout <<left << setw(6) << bookList[i].bookID
