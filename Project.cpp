@@ -3,7 +3,30 @@
 #include <string>
 #include <cstring>
 #include <iomanip>
+#include <ctime>
 using namespace std;
+
+// Returns today's date "YYYY-MM-DD" using the system clock
+string getTodayDate() {
+    time_t now = time(nullptr);
+    tm* t = localtime(&now);
+    char buf[11];
+    strftime(buf, sizeof(buf), "%Y-%m-%d", t);
+    return string(buf);
+}
+
+// make sure each borrow record gets a different ID
+// count how many times the same book was borrowed before and add 1
+string generateBorrowID(const string& bookYear, const string& bookID) {
+    string base = "BR" + bookYear + bookID + "-";
+    ifstream f("BorrowRecords.txt");
+    int count = 0;
+    string line;
+    while (getline(f, line)) {
+        if (line.find(base) == 0) count++;
+    }
+    return base + to_string(count + 1);
+}
 
 // forward declarations so functions can call each other freely
 void AddBook();
@@ -491,19 +514,18 @@ void borrowBook(string currentCustomer) {
                 if (bookList[i].stock == 0)
                     bookList[i].status = "Borrowed";
 
-                ADTqueue borrowQueue;
-                borrowQueue.append(currentCustomer);
-                string processingUser = borrowQueue.serve();
+                string uniqueID   = generateBorrowID(to_string(bookList[i].year), id);
+                string borrowDate = getTodayDate();
 
                 ofstream recordFile("BorrowRecords.txt", ios::app);
-                recordFile << "BR" << bookList[i].year << id << "|"
-                           << processingUser << "|"
+                recordFile << uniqueID << "|"
+                           << currentCustomer << "|"
                            << bookList[i].bookID << "|"
-                           << "2026-06-07|---|Borrowed" << endl;
+                           << borrowDate << "|---|Borrowed" << endl;
                 recordFile.close();
 
                 cout << "Book '" << bookList[i].title
-                     << "' borrowed successfully by " << processingUser << "!" << endl;
+                     << "' borrowed successfully by " << currentCustomer << "!" << endl;
             } else {
                 cout << "Sorry, this book is out of stock!" << endl;
             }
@@ -566,18 +588,14 @@ void returnBook(string currentCustomer) {
     string bID, custID, bkID, bDate, rDate, bStatus;
     bool recordUpdated = false;
 
-    ADTqueue returnQueue;
-
     while (getline(readFile, bID, '|') && getline(readFile, custID, '|') &&
            getline(readFile, bkID, '|') && getline(readFile, bDate, '|') &&
            getline(readFile, rDate, '|') && getline(readFile, bStatus)) {
 
         if (custID == currentCustomer && bkID == id && bStatus == "Borrowed" && !recordUpdated) {
-            returnQueue.append(custID);
-            string processingCust = returnQueue.serve();
-
-            tempFile << bID << "|" << processingCust << "|" << bkID << "|"
-                     << bDate << "|2026-06-14|Returned" << endl;
+            string returnDate = getTodayDate();
+            tempFile << bID << "|" << custID << "|" << bkID << "|"
+                     << bDate << "|" << returnDate << "|Returned" << endl;
             recordUpdated = true;
         } else {
             tempFile << bID << "|" << custID << "|" << bkID << "|"
