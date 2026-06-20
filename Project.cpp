@@ -6,7 +6,7 @@
 #include <ctime>
 using namespace std;
 
-// Returns today's date "YYYY-MM-DD" using the system clock
+// get today's date from the computer
 string getTodayDate() {
     time_t now = time(nullptr);
     tm* t = localtime(&now);
