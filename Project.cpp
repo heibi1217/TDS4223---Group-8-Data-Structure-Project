@@ -3,51 +3,20 @@
 #include <string>
 #include <cstring>
 #include <iomanip>
-#include <ctime>
 using namespace std;
 
-<<<<<<< HEAD
 // forward declarations so functions can call each other without restriction
 void addBook();
 void editBook();
 void deleteBook();
 void displayBooks();
-=======
-// get today's date from the computer
-string getTodayDate() {
-    time_t now = time(nullptr);
-    tm* t = localtime(&now);
-    char buf[11];
-    strftime(buf, sizeof(buf), "%Y-%m-%d", t);
-    return string(buf);
-}
-
-// make sure each borrow record gets a different ID
-// count how many times the same book was borrowed before and add 1
-string generateBorrowID(const string& bookYear, const string& bookID) {
-    string base = "BR" + bookYear + bookID + "-";
-    ifstream f("BorrowRecords.txt");
-    int count = 0;
-    string line;
-    while (getline(f, line)) {
-        if (line.find(base) == 0) count++;
-    }
-    return base + to_string(count + 1);
-}
-
-// forward declarations so functions can call each other freely
-void AddBook();
-void EditBook();
-void DelBook();
-void DisBooks();
->>>>>>> ed688c2a6a893b3ad47f9f6d38fb99b16eb06df2
 void searchBook(string username, bool isAdmin);
 void sortBooks();
 void borrowBook(string currentCustomer);
 void returnBook(string currentCustomer);
 void generateReport();
 void viewReport();
-int  CountBooks();
+int  countBooksInFile();
 
 // Customer account management (Admin Side)
 void manageCustomers();
@@ -90,7 +59,7 @@ int  countReservations();
 int  overdueDays(string borrowDate, string returnDate, string status);
 int  readInt(string prompt);
 
-struct Book{
+struct Book {
     string bookID;
     string title;
     string author;
@@ -206,131 +175,102 @@ class BookStack {
 BookStack deletedBooks;
 
 // Account base class and subclasses
-<<<<<<< HEAD
 class Account {
     protected:
         string username;
         string password;
         string role;
-=======
-// -------------------------------------------------------
-class Account
-{
-	protected:
-		string username;
-		string password;
-		string role;
->>>>>>> ed688c2a6a893b3ad47f9f6d38fb99b16eb06df2
 
-	public:
-		Account()
-		{
-			username = "";
-			password = "";
-			role = "";
-		}
+    public:
+        Account() {
+            username = "";
+            password = "";
+            role = "";
+        }
 
-		~Account() {}
+        ~Account() {}
 
-		friend void displayAccount(const Account& a);
-		friend void displayGuest(const Account& a);
-		friend class Admin;
+        friend void displayAccount(const Account& a);
+        friend void displayGuest(const Account& a);
+        friend class Admin;
 
-		string getUsername() { return username; }
-		string getPassword() { return password; }
-		string getRole() { return role; }
+        string getUsername() { return username; }
+        string getPassword() { return password; }
+        string getRole()     { return role; }
 };
 
-class User : public Account
-{
-	public:
-		User() { role = "Customer"; }
+class User : public Account {
+    public:
+        User() { role = "Customer"; }
 
-		User(string u, string p)
-		{
-			username = u;
-			password = p;
-			role = "Customer";
-		}
+        User(string u, string p) {
+            username = u;
+            password = p;
+            role = "Customer";
+        }
 
-		~User() {}
-		friend void displayUser(const User& u);
+        ~User() {}
+        friend void displayUser(const User& u);
 
-		void setUsername(string u) { username = u; }
-		void setPassword(string p) { password = p; }
+        void setUsername(string u) { username = u; }
+        void setPassword(string p) { password = p; }
 };
 
-class Admin : public Account
-{
-	public:
-		Admin() { role = "Admin"; }
+class Admin : public Account {
+    public:
+        Admin() { role = "Admin"; }
 
-		Admin(string u, string p)
-		{
-			username = u;
-			password = p;
-			role = "Admin";
-		}
+        Admin(string u, string p) {
+            username = u;
+            password = p;
+            role = "Admin";
+        }
 
-		~Admin() {}
-		friend void displayAdmin(const Admin& a);
+        ~Admin() {}
+        friend void displayAdmin(const Admin& a);
 
-		void setUsername(string u) { username = u; }
-		void setPassword(string p) { password = p; }
+        void setUsername(string u) { username = u; }
+        void setPassword(string p) { password = p; }
 };
 
-// guest is a visitor that has not login yet (used in Help / About)
-class Guest : public Account
-{
-	public:
-		Guest()
-		{
-			username = "Visitor";
-			role = "Guest";
-		}
+// a visitor who has not logged in yet (used on the Help / About screen)
+class Guest : public Account {
+    public:
+        Guest() {
+            username = "Visitor";
+            role = "Guest";
+        }
 
-		~Guest() {}
+        ~Guest() {}
 };
 
-<<<<<<< HEAD
 // Friend functions - they can reach the protected fields of the
 // account classes to print a short welcome card after login.
 void displayAccount(const Account& a) {
     cout << "Account : " << a.username << " (" << a.role << ")" << endl;
-=======
-// friend functions to print the welcome card after login
-// they can read the protected username and role
-void displayAccount(const Account& a)
-{
-	cout << "Account : " << a.username << " (" << a.role << ")" << endl;
->>>>>>> ed688c2a6a893b3ad47f9f6d38fb99b16eb06df2
 }
 
-void displayUser(const User& u)
-{
-	cout << "--------------------------------" << endl;
-	cout << " Welcome back, customer " << u.username << endl;
-	cout << " Access level: " << u.role << endl;
-	cout << "--------------------------------" << endl;
+void displayUser(const User& u) {
+    cout << "--------------------------------" << endl;
+    cout << " Welcome back, customer " << u.username << endl;
+    cout << " Access level: " << u.role << endl;
+    cout << "--------------------------------" << endl;
 }
 
-void displayAdmin(const Admin& a)
-{
-	cout << "--------------------------------" << endl;
-	cout << " Welcome back, admin " << a.username << endl;
-	cout << " Access level: " << a.role << endl;
-	cout << "--------------------------------" << endl;
+void displayAdmin(const Admin& a) {
+    cout << "--------------------------------" << endl;
+    cout << " Welcome back, admin " << a.username << endl;
+    cout << " Access level: " << a.role << endl;
+    cout << "--------------------------------" << endl;
 }
 
-void displayGuest(const Account& a)
-{
-	cout << "--------------------------------" << endl;
-	cout << " Hello " << a.username << "!" << endl;
-	cout << " Access level: " << a.role << " (please login for more)" << endl;
-	cout << "--------------------------------" << endl;
+void displayGuest(const Account& a) {
+    cout << "--------------------------------" << endl;
+    cout << " Hello " << a.username << "!" << endl;
+    cout << " Access level: " << a.role << " (please login for more)" << endl;
+    cout << "--------------------------------" << endl;
 }
 
-<<<<<<< HEAD
 // Register / Login / Logout
 void registerUser() {
     string u, p;
@@ -340,133 +280,99 @@ void registerUser() {
     cout << "Enter password: ";
     cin >> p;
     cout << endl;
-=======
-// =========================
-// Register / Login / Logout
-// =========================
-void registerUser()
-{
-	string u, p;
-	string fu, fp, frole;
->>>>>>> ed688c2a6a893b3ad47f9f6d38fb99b16eb06df2
 
-	cout << "\n== Register New Customer ==" << endl;
-	cout << "Enter username: ";
-	cin >> u;
-	cout << "Enter password: ";
-	cin >> p;
-	cout << endl;
+    string fu, fp, frole;
+    ifstream checkFile("Customer.txt");
+    while (getline(checkFile, fu, '|') && getline(checkFile, fp, '|') && getline(checkFile, frole)) {
+        if (u == fu) {
+            cout << "Username already exists! Please choose another." << endl << endl;
+            checkFile.close();
+            return;
+        }
+    }
+    checkFile.close();
 
-	// check first so the same username is not used twice
-	ifstream checkFile("Customer.txt");
-	while(getline(checkFile, fu, '|') && getline(checkFile, fp, '|') && getline(checkFile, frole))
-	{
-		if(u == fu)
-		{
-			cout << "Username already exists! Please choose another." << endl << endl;
-			checkFile.close();
-			return;
-		}
-	}
-	checkFile.close();
+    User* newUser = new User(u, p);
+    ofstream file("Customer.txt", ios::app);
+    file << newUser->getUsername() << "|" << newUser->getPassword() << "|Customer" << endl;
+    file.close();
+    delete newUser;
 
-	User* newUser = new User(u, p);
-	ofstream file("Customer.txt", ios::app);
-	file << newUser->getUsername() << "|" << newUser->getPassword() << "|Customer" << endl;
-	file.close();
-	delete newUser;
-
-	cout << "Customer registered successfully!" << endl << endl;
+    cout << "Customer registered successfully!" << endl << endl;
 }
 
-string loginUser()
-{
-	string u, p, fu, fp, frole;
+string loginUser() {
+    string u, p, fu, fp, frole;
+    cout << "\n== Customer Login ==" << endl;
+    cout << "Enter username: ";
+    cin >> u;
+    cout << "Enter password: ";
+    cin >> p;
+    cout << endl;
 
-	cout << "\n== Customer Login ==" << endl;
-	cout << "Enter username: ";
-	cin >> u;
-	cout << "Enter password: ";
-	cin >> p;
-	cout << endl;
-
-	ifstream file("Customer.txt");
-	while(getline(file, fu, '|') && getline(file, fp, '|') && getline(file, frole))
-	{
-		if(u == fu && p == fp)
-		{
-			file.close();
-			User loggedIn(u, p);
-			displayUser(loggedIn); // friend function welcome card
-			return u;
-		}
-	}
-	file.close();
-	cout << "Invalid username or password." << endl;
-	return "";
+    ifstream file("Customer.txt");
+    while (getline(file, fu, '|') && getline(file, fp, '|') && getline(file, frole)) {
+        if (u == fu && p == fp) {
+            file.close();
+            User loggedIn(u, p);
+            displayUser(loggedIn);   // friend function welcome card
+            return u;
+        }
+    }
+    file.close();
+    cout << "Invalid username or password." << endl;
+    return "";
 }
 
-string loginAdmin()
-{
-	string u, p, fu, fp, frole;
+string loginAdmin() {
+    string u, p, fu, fp, frole;
+    cout << "\n== Admin Login ==" << endl;
+    cout << "Enter username: ";
+    cin >> u;
+    cout << "Enter password: ";
+    cin >> p;
+    cout << endl;
 
-	cout << "\n== Admin Login ==" << endl;
-	cout << "Enter username: ";
-	cin >> u;
-	cout << "Enter password: ";
-	cin >> p;
-	cout << endl;
-
-	ifstream file("Admin.txt");
-	while(getline(file, fu, '|') && getline(file, fp, '|') && getline(file, frole))
-	{
-		if(u == fu && p == fp)
-		{
-			file.close();
-			Admin loggedIn(u, p);
-			displayAdmin(loggedIn); // friend function welcome card
-			return u;
-		}
-	}
-	file.close();
-	cout << "Invalid username or password." << endl;
-	return "";
+    ifstream file("Admin.txt");
+    while (getline(file, fu, '|') && getline(file, fp, '|') && getline(file, frole)) {
+        if (u == fu && p == fp) {
+            file.close();
+            Admin loggedIn(u, p);
+            displayAdmin(loggedIn);   // friend function welcome card
+            return u;
+        }
+    }
+    file.close();
+    cout << "Invalid username or password." << endl;
+    return "";
 }
 
-void logout()
-{
-	cout << "\nLogging out... Goodbye!" << endl << endl;
+void logout() {
+    cout << "\nLogging out... Goodbye!" << endl << endl;
 }
 
 // File helpers - count, load, save books
-<<<<<<< HEAD
 int countBooksInFile() {
-=======
-// -------------------------------------------------------
-int CountBooks(){
->>>>>>> ed688c2a6a893b3ad47f9f6d38fb99b16eb06df2
     ifstream file("Books.txt");
-    if(!file.is_open())
-		return 0;
+    if (!file.is_open()) return 0;
     int count = 0;
     string line;
-    while(getline(file, line)){
-        if(!line.empty())
-			count++;
+    while (getline(file, line)) {
+        if (!line.empty()) count++;
     }
     file.close();
     return count;
 }
 
-Book* LoadBooks(int& size){
-    size = CountBooks();
-    if(size == 0) return nullptr;
+Book* loadBooks(int& size) {
+    size = countBooksInFile();
+    if (size == 0) return nullptr;
 
     Book* bookList = new Book[size];
     ifstream file("Books.txt");
     string tempYear, tempStock;
 
-    for(int i = 0; i < size; i++){
+    for (int i = 0; i < size; i++) {
         getline(file, bookList[i].bookID, '|');
         getline(file, bookList[i].title, '|');
         getline(file, bookList[i].author, '|');
@@ -476,21 +382,21 @@ Book* LoadBooks(int& size){
         getline(file, bookList[i].status);
 
         // some books may have a non-numeric year like "Unknown"
-        try{
-            if(!tempYear.empty() && tempYear != "Unknown")
+        try {
+            if (!tempYear.empty() && tempYear != "Unknown")
                 bookList[i].year = stoi(tempYear);
             else
                 bookList[i].year = 0;
-        } catch (...){
+        } catch (...) {
             bookList[i].year = 0;
         }
 
-        try{
-            if(!tempStock.empty())
+        try {
+            if (!tempStock.empty())
                 bookList[i].stock = stoi(tempStock);
             else
                 bookList[i].stock = 0;
-        } catch (...){
+        } catch (...) {
             bookList[i].stock = 0;
         }
     }
@@ -498,17 +404,16 @@ Book* LoadBooks(int& size){
     return bookList;
 }
 
-void SaveBooks(Book* bookList, int size){
+void saveBooks(Book* bookList, int size) {
     ofstream file("Books.txt", ios::trunc);
-	
-    for(int i = 0; i < size; i++){
-        file <<bookList[i].bookID<<"|"
-             <<bookList[i].title<<"|"
-             <<bookList[i].author<<"|"
-             <<bookList[i].category<<"|"
-             <<bookList[i].year<<"|"
-             <<bookList[i].stock<<"|"
-             <<bookList[i].status<<endl;
+    for (int i = 0; i < size; i++) {
+        file << bookList[i].bookID   << "|"
+             << bookList[i].title    << "|"
+             << bookList[i].author   << "|"
+             << bookList[i].category << "|"
+             << bookList[i].year     << "|"
+             << bookList[i].stock    << "|"
+             << bookList[i].status   << endl;
     }
     file.close();
 }
@@ -519,7 +424,7 @@ void borrowBook(string currentCustomer) {
     cout << "\n== Borrow Book ==" << endl;
 
     int size = 0;
-    Book* bookList = LoadBooks(size);
+    Book* bookList = loadBooks(size);
 
     if (size == 0 || bookList == nullptr) {
         cout << "No books available in the library." << endl;
@@ -547,18 +452,19 @@ void borrowBook(string currentCustomer) {
                 if (bookList[i].stock == 0)
                     bookList[i].status = "Borrowed";
 
-                string uniqueID   = generateBorrowID(to_string(bookList[i].year), id);
-                string borrowDate = getTodayDate();
+                ADTqueue borrowQueue;
+                borrowQueue.append(currentCustomer);
+                string processingUser = borrowQueue.serve();
 
                 ofstream recordFile("BorrowRecords.txt", ios::app);
-                recordFile << uniqueID << "|"
-                           << currentCustomer << "|"
+                recordFile << "BR" << bookList[i].year << id << "|"
+                           << processingUser << "|"
                            << bookList[i].bookID << "|"
-                           << borrowDate << "|---|Borrowed" << endl;
+                           << "2026-06-07|---|Borrowed" << endl;
                 recordFile.close();
 
                 cout << "Book '" << bookList[i].title
-                     << "' borrowed successfully by " << currentCustomer << "!" << endl;
+                     << "' borrowed successfully by " << processingUser << "!" << endl;
             } else {
                 cout << "Sorry, this book is out of stock!" << endl;
             }
@@ -567,7 +473,7 @@ void borrowBook(string currentCustomer) {
     }
 
     if (found) {
-        SaveBooks(bookList, size);
+        saveBooks(bookList, size);
     } else {
         cout << "Book ID not found." << endl;
     }
@@ -590,7 +496,7 @@ void returnBook(string currentCustomer) {
     }
 
     int size = 0;
-    Book* bookList = LoadBooks(size);
+    Book* bookList = loadBooks(size);
     bool bookFound = false;
 
     for (int i = 0; i < size; i++) {
@@ -619,14 +525,18 @@ void returnBook(string currentCustomer) {
     string bID, custID, bkID, bDate, rDate, bStatus;
     bool recordUpdated = false;
 
+    ADTqueue returnQueue;
+
     while (getline(readFile, bID, '|') && getline(readFile, custID, '|') &&
            getline(readFile, bkID, '|') && getline(readFile, bDate, '|') &&
            getline(readFile, rDate, '|') && getline(readFile, bStatus)) {
 
         if (custID == currentCustomer && bkID == id && bStatus == "Borrowed" && !recordUpdated) {
-            string returnDate = getTodayDate();
-            tempFile << bID << "|" << custID << "|" << bkID << "|"
-                     << bDate << "|" << returnDate << "|Returned" << endl;
+            returnQueue.append(custID);
+            string processingCust = returnQueue.serve();
+
+            tempFile << bID << "|" << processingCust << "|" << bkID << "|"
+                     << bDate << "|2026-06-14|Returned" << endl;
             recordUpdated = true;
         } else {
             tempFile << bID << "|" << custID << "|" << bkID << "|"
@@ -641,7 +551,7 @@ void returnBook(string currentCustomer) {
     rename("TempRecords.txt", "BorrowRecords.txt");
 
     if (recordUpdated) {
-        SaveBooks(bookList, size);
+        saveBooks(bookList, size);
         cout << "Book returned successfully! Thank you, " << currentCustomer << "!" << endl;
     } else {
         cout << "You have not borrowed this book or it was already returned." << endl;
@@ -653,7 +563,7 @@ void returnBook(string currentCustomer) {
                 break;
             }
         }
-        SaveBooks(bookList, size);
+        saveBooks(bookList, size);
     }
 
     delete[] bookList;
@@ -663,7 +573,7 @@ void returnBook(string currentCustomer) {
 // Report Generation and TXT File Management (Tsui Hern's part)
 void generateReport() {
     try {
-        int totalBooks = CountBooks();
+        int totalBooks = countBooksInFile();
         int availableBooks = 0;
         int borrowedBooksByStock = 0;
         int totalCustomers = 0;
@@ -672,7 +582,7 @@ void generateReport() {
         int returnedRecords = 0;
 
         int size = 0;
-        Book* bookList = LoadBooks(size);
+        Book* bookList = loadBooks(size);
 
         for (int i = 0; i < size; i++) {
             if (bookList[i].stock > 0) {
@@ -781,7 +691,6 @@ void viewReport() {
     }
 }
 
-<<<<<<< HEAD
 // Customer and Admin menus
 void customerMenu(string username) {
     int choice;
@@ -801,141 +710,108 @@ void customerMenu(string username) {
         cout << "0. Logout" << endl << endl;
         cout << "Enter your choice: ";
         cin >> choice;
-=======
-// =========================
-// Customer and Admin menus
-// =========================
-void customerMenu(string username)
-{
-	int choice;
-	do
-	{
-		cout << "\n=== Customer Menu ===" << endl;
-		cout << "1. Borrow Book" << endl;
-		cout << "2. Return Book" << endl;
-		cout << "3. Renew Book" << endl;
-		cout << "4. Reserve Book" << endl;
-		cout << "5. My Reservations" << endl;
-		cout << "6. Search Book" << endl;
-		cout << "7. Display Books" << endl;
-		cout << "8. My Borrow History" << endl;
-		cout << "9. Check My Fines" << endl;
-		cout << "10. My Profile" << endl;
-		cout << "11. View Borrowing Summary" << endl;
-		cout << "0. Logout" << endl << endl;
-		cout << "Enter your choice: ";
-		cin >> choice;
->>>>>>> ed688c2a6a893b3ad47f9f6d38fb99b16eb06df2
 
-		switch(choice)
-		{
-			case 1: borrowBook(username); break;
-			case 2: returnBook(username); break;
-			case 3: renewBook(username); break;
-			case 4: reserveBook(username); break;
-			case 5: myReservations(username); break;
-			case 6: searchBook(username, false); break;
-			case 7: displayBooksFiltered(); break;
-			case 8: myBorrowHistory(username); break;
-			case 9: checkMyFines(username); break;
-			case 10: myProfile(username); break;
-			case 11: viewReport(); break; // Tsui Hern's part
-			case 0: break;
-			default: cout << "\nInvalid choice. Please try again." << endl;
-		}
-	} while(choice != 0);
+        switch (choice) {
+            case 1: borrowBook(username); break;
+            case 2: returnBook(username); break;
+            case 3: renewBook(username); break;
+            case 4: reserveBook(username); break;
+            case 5: myReservations(username); break;
+            case 6: searchBook(username, false); break;
+            case 7: displayBooksFiltered(); break;
+            case 8: myBorrowHistory(username); break;
+            case 9: checkMyFines(username); break;
+            case 10: myProfile(username); break;
+            case 11: viewReport(); break;  // Tsui Hern's part
+            case 0: break;
+            default: cout << "\nInvalid choice. Please try again." << endl;
+        }
+    } while (choice != 0);
 
-	logout();
+    logout();
 }
 
-void adminMenu(string username)
-{
-	int choice;
-	do
-	{
-		cout << "\n=== Admin Menu ===" << endl;
-		cout << "1. Add Book" << endl;
-		cout << "2. Edit Book" << endl;
-		cout << "3. Delete Book" << endl;
-		cout << "4. Search Book" << endl;
-		cout << "5. Sort Books" << endl;
-		cout << "6. Display Books" << endl;
-		cout << "7. Manage Customers" << endl;
-		cout << "8. View Borrow Records" << endl;
-		cout << "9. Force Return Book" << endl;
-		cout << "10. Manage Reservations" << endl;
-		cout << "11. Overdue Report" << endl;
-		cout << "12. Book Statistics" << endl;
-		cout << "13. Top Borrowed Books" << endl;
-		cout << "14. Manage Admins" << endl;
-		cout << "15. Undo Last Delete" << endl;
-		cout << "16. Generate Reports" << endl;
-		cout << "0. Logout" << endl << endl;
-		cout << "Enter your choice: ";
-		cin >> choice;
+void adminMenu(string username) {
+    int choice;
+    do {
+        cout << "\n=== Admin Menu ===" << endl;
+        cout << "1. Add Book" << endl;
+        cout << "2. Edit Book" << endl;
+        cout << "3. Delete Book" << endl;
+        cout << "4. Search Book" << endl;
+        cout << "5. Sort Books" << endl;
+        cout << "6. Display Books" << endl;
+        cout << "7. Manage Customers" << endl;
+        cout << "8. View Borrow Records" << endl;
+        cout << "9. Force Return Book" << endl;
+        cout << "10. Manage Reservations" << endl;
+        cout << "11. Overdue Report" << endl;
+        cout << "12. Book Statistics" << endl;
+        cout << "13. Top Borrowed Books" << endl;
+        cout << "14. Manage Admins" << endl;
+        cout << "15. Undo Last Delete" << endl;
+        cout << "16. Generate Reports" << endl;
+        cout << "0. Logout" << endl << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
 
-		switch(choice)
-		{
-			case 1: AddBook(); break;
-			case 2: EditBook(); break;
-			case 3: DelBook(); break;
-			case 4: searchBook(username, true); break;
-			case 5: sortBooks(); break;
-			case 6: DisBooks(); break;
-			case 7: manageCustomers(); break;
-			case 8: viewBorrowRecords(); break;
-			case 9: forceReturn(); break;
-			case 10: manageReservations(); break;
-			case 11: overdueReport(); break;
-			case 12: bookStatistics(); break;
-			case 13: topBorrowedBooks(); break;
-			case 14: manageAdmins(); break;
-			case 15: restoreLastDeleted(); break;
-			case 16: generateReport(); break; // Tsui Hern's part
-			case 0: break;
-			default: cout << "\nInvalid choice. Please try again." << endl;
-		}
-	} while(choice != 0);
+        switch (choice) {
+            case 1: addBook(); break;
+            case 2: editBook(); break;
+            case 3: deleteBook(); break;
+            case 4: searchBook(username, true); break;
+            case 5: sortBooks(); break;
+            case 6: displayBooks(); break;
+            case 7: manageCustomers(); break;
+            case 8: viewBorrowRecords(); break;
+            case 9: forceReturn(); break;
+            case 10: manageReservations(); break;
+            case 11: overdueReport(); break;
+            case 12: bookStatistics(); break;
+            case 13: topBorrowedBooks(); break;
+            case 14: manageAdmins(); break;
+            case 15: restoreLastDeleted(); break;
+            case 16: generateReport(); break;  // Tsui Hern's part
+            case 0: break;
+            default: cout << "\nInvalid choice. Please try again." << endl;
+        }
+    } while (choice != 0);
 
-	logout();
+    logout();
 }
 
-// help / about screen, can be opened from the main menu
-void showHelp()
-{
-	Guest visitor;
-	displayGuest(visitor); // greet the visitor that is not login yet
-
-	cout << "\n=============== HELP / ABOUT ===============" << endl;
-	cout << "This is a library book records system." << endl;
-	cout << endl;
-	cout << "Customer accounts can:" << endl;
-	cout << " - borrow, renew, return and reserve books" << endl;
-	cout << " - search and browse the book list" << endl;
-	cout << " - view their own history, fines and profile" << endl;
-	cout << endl;
-	cout << "Admin accounts can:" << endl;
-	cout << " - add, edit, delete and sort books" << endl;
-	cout << " - manage customer and admin accounts" << endl;
-	cout << " - handle borrow records and reservations" << endl;
-	cout << " - generate reports and check overdue fines" << endl;
-	cout << endl;
-	cout << "All data is stored in plain text files so it stays" << endl;
-	cout << "consistent between the two modules." << endl;
-	cout << "===========================================" << endl;
+// a longer help screen the user can open from the main menu
+void showHelp() {
+    Guest visitor;
+    displayGuest(visitor);   // greet the not-logged-in visitor
+    cout << "\n=============== HELP / ABOUT ===============" << endl;
+    cout << "This is a library book records system." << endl;
+    cout << endl;
+    cout << "Customer accounts can:" << endl;
+    cout << " - borrow, renew, return and reserve books" << endl;
+    cout << " - search and browse the book list" << endl;
+    cout << " - view their own history, fines and profile" << endl;
+    cout << endl;
+    cout << "Admin accounts can:" << endl;
+    cout << " - add, edit, delete and sort books" << endl;
+    cout << " - manage customer and admin accounts" << endl;
+    cout << " - handle borrow records and reservations" << endl;
+    cout << " - generate reports and check overdue fines" << endl;
+    cout << endl;
+    cout << "All data is stored in plain text files so it stays" << endl;
+    cout << "consistent between the two modules." << endl;
+    cout << "===========================================" << endl;
 }
 
-// banner that shows one time when the program starts
-void showWelcomeBanner()
-{
-	cout << "*********************************************" << endl;
-	cout << "*      Group 8 - Library Book Records       *" << endl;
-	cout << "*   Data Structure and Algorithms Project   *" << endl;
-	cout << "*********************************************" << endl;
-	cout << endl;
+// a short banner shown once when the program starts
+void showWelcomeBanner() {
+    cout << "*********************************************" << endl;
+    cout << "*      Group 8 - Library Book Records       *" << endl;
+    cout << "*   Data Structure and Algorithms Project   *" << endl;
+    cout << "*********************************************" << endl;
+    cout << endl;
 }
 
-<<<<<<< HEAD
 // Main
 int main() {
     int choice;
@@ -951,648 +827,265 @@ int main() {
         cout << "0. Exit" << endl << endl;
         cout << "Enter choice: ";
         cin >> choice;
-=======
-// =========================
-// Main
-// =========================
-int main()
-{
-	int choice;
-	showWelcomeBanner();
->>>>>>> ed688c2a6a893b3ad47f9f6d38fb99b16eb06df2
 
-	do
-	{
-		cout << "=================================" << endl;
-		cout << "=  Library Book Records System  =" << endl;
-		cout << "=================================" << endl;
-		cout << "1. Customer Login" << endl;
-		cout << "2. Customer Register" << endl;
-		cout << "3. Admin Login" << endl;
-		cout << "4. Help / About" << endl;
-		cout << "0. Exit" << endl << endl;
-		cout << "Enter choice: ";
-		cin >> choice;
+        switch (choice) {
+            case 1: {
+                try {
+                    string loggedIn = loginUser();
+                    if (loggedIn.empty()) throw "Login failed!";
+                    customerMenu(loggedIn);
+                } catch (const char* e) {
+                    cout << "Error: " << e << endl << endl;
+                }
+                break;
+            }
+            case 2: {
+                registerUser();
+                break;
+            }
+            case 3: {
+                try {
+                    string loggedIn = loginAdmin();
+                    if (loggedIn.empty()) throw "Login failed!";
+                    adminMenu(loggedIn);
+                } catch (const char* e) {
+                    cout << "Error: " << e << endl << endl;
+                }
+                break;
+            }
+            case 4: {
+                showHelp();
+                break;
+            }
+            case 0: {
+                logout();
+                break;
+            }
+            default: {
+                cout << "Invalid choice. Please try again." << endl;
+                break;
+            }
+        }
+    } while (choice != 0);
 
-		if(choice == 1)
-		{
-			// try catch so a failed login does not crash the program
-			try
-			{
-				string loggedIn = loginUser();
-				if(loggedIn.empty()) throw "Login failed!";
-				customerMenu(loggedIn);
-			}
-			catch(const char* e)
-			{
-				cout << "Error: " << e << endl << endl;
-			}
-		}
-		else if(choice == 2)
-		{
-			registerUser();
-		}
-		else if(choice == 3)
-		{
-			try
-			{
-				string loggedIn = loginAdmin();
-				if(loggedIn.empty()) throw "Login failed!";
-				adminMenu(loggedIn);
-			}
-			catch(const char* e)
-			{
-				cout << "Error: " << e << endl << endl;
-			}
-		}
-		else if(choice == 4)
-		{
-			showHelp();
-		}
-		else if(choice == 0)
-		{
-			logout();
-		}
-		else
-		{
-			cout << "Invalid choice. Please try again." << endl;
-		}
-	} while(choice != 0);
-
-	cout << "*********************************************" << endl;
-	cout << "*  Thank you for using the Library System  *" << endl;
-	cout << "*               Goodbye!                    *" << endl;
-	cout << "*********************************************" << endl;
-	return 0;
+    cout << "*********************************************" << endl;
+    cout << "*  Thank you for using the Library System  *" << endl;
+    cout << "*               Goodbye!                    *" << endl;
+    cout << "*********************************************" << endl;
+    return 0;
 }
 
-<<<<<<< HEAD
 // Add / Display / Edit / Delete Book (Yvonne's part)
 void addBook() {
     cout << "\n== Add New Book ==" << endl;
-=======
-//Yvonne's part (Add / Display / Edit / Delete Books)
-void AddBook(){
-    cout<<"\n== Add New Book =="<<endl;
->>>>>>> ed688c2a6a893b3ad47f9f6d38fb99b16eb06df2
     Book newBook;
-	
-    //find the largest Book ID already in use and add one,
-    //so the system gives the new book a unique ID by itself
+
+    // find the largest Book ID already in use and add one,
+    // so the system gives the new book a unique ID by itself
     int existSize = 0;
-    Book* existing = LoadBooks(existSize);
+    Book* existing = loadBooks(existSize);
     int maxID = 0;
-    for(int i = 0; i < existSize; i++){
-        try{
+    for (int i = 0; i < existSize; i++) {
+        try {
             int id = stoi(existing[i].bookID);
             if (id > maxID) maxID = id;
-        } catch(...){
-            //skip any book whose ID is not a plain number
+        } catch (...) {
+            // skip any book whose ID is not a plain number
         }
     }
-    if(existing != nullptr) delete[] existing;
-	
+    if (existing != nullptr) delete[] existing;
+
     newBook.bookID = to_string(maxID + 1);
-    cout<<"Auto-generated Book ID: "<<newBook.bookID<<endl;
-	
+    cout << "Auto-generated Book ID: " << newBook.bookID << endl;
+
     cin.ignore();
-    cout<<"Enter Title: ";getline(cin, newBook.title);
-    cout<<"Enter Author: ";getline(cin, newBook.author);
-    cout<<"Enter Category: ";getline(cin, newBook.category);
+    cout << "Enter Title: ";       getline(cin, newBook.title);
+    cout << "Enter Author: ";      getline(cin, newBook.author);
+    cout << "Enter Category: ";    getline(cin, newBook.category);
     newBook.year  = readInt("Enter Publication Year: ");
     newBook.stock = readInt("Enter Stock Quantity: ");
-	
-    newBook.status = (newBook.stock > 0) ? "Available": "Borrowed";
-	
+
+    newBook.status = (newBook.stock > 0) ? "Available" : "Borrowed";
+
     ofstream file("Books.txt", ios::app);
-    file <<newBook.bookID<<"|"<<newBook.title<<"|"
-         <<newBook.author<<"|"<<newBook.category<<"|"
-         <<newBook.year<<"|"<<newBook.stock<<"|"
-         <<newBook.status<<endl;
+    file << newBook.bookID   << "|" << newBook.title  << "|"
+         << newBook.author   << "|" << newBook.category << "|"
+         << newBook.year     << "|" << newBook.stock   << "|"
+         << newBook.status   << endl;
     file.close();
-	
-    //show the full details of the book that was just added
-    cout<<"\nBook successfully added!"<<endl;
-    cout<< "-----------------------------"<<endl;
-    cout<< "Book ID  : "<<newBook.bookID<<endl;
-    cout<< "Title    : "<<newBook.title<<endl;
-    cout<< "Author   : "<<newBook.author<<endl;
-    cout<< "Category : "<<newBook.category<<endl;
-    cout<< "Year     : "<<newBook.year<<endl;
-    cout<< "Stock    : "<<newBook.stock<<endl;
-    cout<< "Status   : "<<newBook.status<<endl;
-    cout<< "-----------------------------"<<endl;
+
+    // show the full details of the book that was just added
+    cout << "\nBook successfully added!" << endl;
+    cout << "-----------------------------" << endl;
+    cout << "Book ID  : " << newBook.bookID   << endl;
+    cout << "Title    : " << newBook.title    << endl;
+    cout << "Author   : " << newBook.author   << endl;
+    cout << "Category : " << newBook.category << endl;
+    cout << "Year     : " << newBook.year     << endl;
+    cout << "Stock    : " << newBook.stock    << endl;
+    cout << "Status   : " << newBook.status   << endl;
+    cout << "-----------------------------" << endl;
 }
 
-void EditBook(){
+void displayBooks() {
     int size = 0;
-    Book* bookList = LoadBooks(size);
-	
-    if(size == 0){
-        cout<<"No books available to edit."<<endl;
+    Book* bookList = loadBooks(size);
+
+    if (size == 0 || bookList == nullptr) {
+        cout << "\nNo books found in the library." << endl;
         return;
     }
-	
-    //show a quick list of ID and title so the admin does not have to guess
-    cout<<"\n-- Current Books --"<<endl;
-    for (int i = 0; i < size; i++){
-        cout<<left << setw(6)<<bookList[i].bookID
-             <<bookList[i].title<<endl;
+
+    cout << "\n========================================= Book List =========================================" << endl;
+    cout << left << setw(10) << "ID"
+                 << setw(25) << "Title"
+                 << setw(20) << "Author"
+                 << setw(15) << "Category"
+                 << setw(8)  << "Year"
+                 << setw(8)  << "Stock"
+                 << "Status" << endl;
+    cout << "---------------------------------------------------------------------------------------------" << endl;
+
+    for (int i = 0; i < size; i++) {
+        cout << left << setw(10) << bookList[i].bookID
+             << setw(25) << bookList[i].title.substr(0, 23)
+             << setw(20) << bookList[i].author.substr(0, 18)
+             << setw(15) << bookList[i].category.substr(0, 13)
+             << setw(8)  << bookList[i].year
+             << setw(8)  << bookList[i].stock
+             << bookList[i].status << endl;
     }
-	
-    string id;
-    cout <<"\nEnter Book ID to edit (0 to cancel): ";
-    cin>>id;
-	
-    if(id == "0"){
-        cout<<"Edit cancelled."<<endl;
-        delete[] bookList;
-        return;
-    }
-	
-    bool found = false;
-    for(int i = 0; i < size; i++){
-        if(bookList[i].bookID == id){
-            found = true;
-            cout<<"\nBook Found! Current Title: "<<bookList[i].title<<endl;
-            cin.ignore();
-			
-            cout<<"Enter New Title (or press Enter to keep current): ";
-            string temp;
-            getline(cin, temp);
-            if(!temp.empty()) bookList[i].title = temp;
-			
-            cout<<"Enter New Author (or press Enter to keep current): ";
-            getline(cin, temp);
-            if(!temp.empty()) bookList[i].author = temp;
-			
-            cout<<"Enter New Category (or press Enter to keep current): ";
-            getline(cin, temp);
-            if(!temp.empty()) bookList[i].category = temp;
-			
-            cout<<"Enter New Publication Year (Enter -1 to keep current): ";
-            int newYear;
-            cin>>newYear;
-            if(newYear >= 0)bookList[i].year = newYear;
-			
-            cout<<"Enter New Stock Quantity (Enter -1 to keep current): ";
-            int newStock;
-            cin>>newStock;
-			
-            if(newStock >= 0){
-                bookList[i].stock = newStock;
-                bookList[i].status = (newStock > 0) ? "Available": "Borrowed";
-            } break;
-        }
-    }
-	
-    if(found){
-        SaveBooks(bookList, size);
-        cout<<"Book details updated successfully!"<<endl;
-    } else{
-        cout <<"Book ID not found."<<endl;
-    }
+    cout << "=============================================================================================" << endl;
+
     delete[] bookList;
 }
 
-void DelBook(){
+void editBook() {
     int size = 0;
-    Book* bookList = LoadBooks(size);
-	
-    if(size == 0){
-        cout<<"No books available to delete."<<endl;
+    Book* bookList = loadBooks(size);
+
+    if (size == 0) {
+        cout << "No books available to edit." << endl;
         return;
     }
-	
-    //show a quick list of ID and title so the admin does not have to guess
-    cout<<"\n-- Current Books --"<<endl;
-    for(int i = 0; i < size; i++){
-        cout <<left << setw(6) << bookList[i].bookID
-             <<bookList[i].title << endl;
+
+    // show a quick list of ID and title so the admin does not have to guess
+    cout << "\n-- Current Books --" << endl;
+    for (int i = 0; i < size; i++) {
+        cout << left << setw(6) << bookList[i].bookID
+             << bookList[i].title << endl;
     }
-	
+
     string id;
-    cout<<"\nEnter Book ID to delete (0 to cancel): ";
-    cin>>id;
-	
-    if(id == "0"){
-        cout<<"Delete cancelled."<<endl;
+    cout << "\nEnter Book ID to edit (0 to cancel): ";
+    cin >> id;
+
+    if (id == "0") {
+        cout << "Edit cancelled." << endl;
         delete[] bookList;
         return;
     }
-	
-    int DelIndex = -1;
-    for(int i = 0; i < size; i++){
-        if(bookList[i].bookID == id){
-            DelIndex = i;
+
+    bool found = false;
+    for (int i = 0; i < size; i++) {
+        if (bookList[i].bookID == id) {
+            found = true;
+            cout << "\nBook Found! Current Title: " << bookList[i].title << endl;
+            cin.ignore();
+
+            cout << "Enter New Title (or press Enter to keep current): ";
+            string temp;
+            getline(cin, temp);
+            if (!temp.empty()) bookList[i].title = temp;
+
+            cout << "Enter New Author (or press Enter to keep current): ";
+            getline(cin, temp);
+            if (!temp.empty()) bookList[i].author = temp;
+
+            cout << "Enter New Category (or press Enter to keep current): ";
+            getline(cin, temp);
+            if (!temp.empty()) bookList[i].category = temp;
+
+            cout << "Enter New Publication Year (Enter -1 to keep current): ";
+            int newYear;
+            cin >> newYear;
+            if (newYear >= 0) bookList[i].year = newYear;
+
+            cout << "Enter New Stock Quantity (Enter -1 to keep current): ";
+            int newStock;
+            cin >> newStock;
+            if (newStock >= 0) {
+                bookList[i].stock = newStock;
+                bookList[i].status = (newStock > 0) ? "Available" : "Borrowed";
+            }
             break;
         }
     }
-	
-    if(DelIndex != -1){
+
+    if (found) {
+        saveBooks(bookList, size);
+        cout << "Book details updated successfully!" << endl;
+    } else {
+        cout << "Book ID not found." << endl;
+    }
+
+    delete[] bookList;
+}
+
+void deleteBook() {
+    int size = 0;
+    Book* bookList = loadBooks(size);
+
+    if (size == 0) {
+        cout << "No books available to delete." << endl;
+        return;
+    }
+
+    // show a quick list of ID and title so the admin does not have to guess
+    cout << "\n-- Current Books --" << endl;
+    for (int i = 0; i < size; i++) {
+        cout << left << setw(6) << bookList[i].bookID
+             << bookList[i].title << endl;
+    }
+
+    string id;
+    cout << "\nEnter Book ID to delete (0 to cancel): ";
+    cin >> id;
+
+    if (id == "0") {
+        cout << "Delete cancelled." << endl;
+        delete[] bookList;
+        return;
+    }
+
+    int deleteIndex = -1;
+    for (int i = 0; i < size; i++) {
+        if (bookList[i].bookID == id) {
+            deleteIndex = i;
+            break;
+        }
+    }
+
+    if (deleteIndex != -1) {
         // keep a copy on the stack so the deletion can be undone later
-        deletedBooks.push(bookList[DelIndex]);
-		
+        deletedBooks.push(bookList[deleteIndex]);
+
         Book* newBookList = new Book[size - 1];
         int j = 0;
-        for(int i = 0; i < size; i++){
-            if(i == DelIndex) continue;
+        for (int i = 0; i < size; i++) {
+            if (i == deleteIndex) continue;
             newBookList[j++] = bookList[i];
         }
-        SaveBooks(newBookList, size - 1);
+        saveBooks(newBookList, size - 1);
         delete[] newBookList;
-		
-        cout<<"Book deleted successfully! (Use 'Undo Last Delete' to restore.)"<<endl;
-    } else{
-        cout<<"Book ID not found."<<endl;
-    }
-    delete[] bookList;
-}
-
-void DisBooks(){
-    int size = 0;
-    Book* bookList = LoadBooks(size);
-	
-    if(size == 0 || bookList == nullptr){
-        cout<<"\nNo books found in the library."<<endl;
-        return;
-    }
-	
-    cout<<"\n========================================= Book List ========================================="<<endl;
-    cout<<left << setw(10)<<"ID"
-                 <<setw(25)<<"Title"
-                 <<setw(20)<<"Author"
-                 <<setw(15)<<"Category"
-                 <<setw(8) <<"Year"
-                 <<setw(8)<<"Stock"
-                 <<"Status"<<endl;
-    cout<<"---------------------------------------------------------------------------------------------"<<endl;
-	
-    for(int i = 0; i < size; i++){
-        cout<<left << setw(10) << bookList[i].bookID
-             <<setw(25)<< bookList[i].title.substr(0, 23)
-             <<setw(20)<< bookList[i].author.substr(0, 18)
-             <<setw(15)<< bookList[i].category.substr(0, 13)
-             <<setw(8)<< bookList[i].year
-             <<setw(8)<< bookList[i].stock
-             <<bookList[i].status << endl;
-    }
-    cout<<"============================================================================================="<<endl;
-	
-    delete[] bookList;
-}
-<<<<<<< HEAD
- 
-=======
-
-// =======================================================
-// PART D - Search and Sort  (Zhong Bao's part)
-// =======================================================
-
-// -------------------------------------------------------
-// LINEAR SEARCH
-// Chapter 6.2 - Sequential Search
-// Goes through every book one by one
-// Returns index if found, -1 if not found
-// Used for: search by title keyword, search by author, search by category
-// -------------------------------------------------------
-int linearSearch(Book* bookList, int size, string keyword, int field) {
-    // field 0 = title, 1 = author, 2 = category
-
-    string kw = keyword;
-    for (int i = 0; i < (int)kw.size(); i++)
-        kw[i] = tolower(kw[i]);
-
-    for (int i = 0; i < size; i++) {
-        string target = "";
-
-        if (field == 0)      target = bookList[i].title;
-        else if (field == 1) target = bookList[i].author;
-        else if (field == 2) target = bookList[i].category;
-
-        // convert to lowercase before comparing
-        for (int j = 0; j < (int)target.size(); j++)
-            target[j] = tolower(target[j]);
-
-        if (target.find(kw) != string::npos)
-            return i;   // found first match
-    }
-
-    return -1;
-}
-
-// -------------------------------------------------------
-// BINARY SEARCH
-// Chapter 6.3 - Divide and Conquer
-// List MUST be sorted by bookID before calling this
-// Searches by exact Book ID
-// -------------------------------------------------------
-int binarySearch(Book* bookList, int size, string targetID) {
-
-    int first = 0;
-    int last  = size - 1;
-
-    while (first <= last) {
-
-        int mid = (first + last) / 2;   // find the middle
-
-        if (bookList[mid].bookID == targetID) {
-            return mid;   // found
-
-        } else if (bookList[mid].bookID < targetID) {
-            first = mid + 1;   // target is in the right half
-
-        } else {
-            last = mid - 1;    // target is in the left half
-        }
-    }
-
-    return -1;   // not found
-}
-
-// -------------------------------------------------------
-// BUBBLE SORT
-// Chapter 8.4 - Sort by Title A to Z
-// Compares neighbours, swaps if out of order
-// Stops early if no swap happened in a full pass
-// -------------------------------------------------------
-void bubbleSort(Book* bookList, int size) {
-
-    for (int i = 0; i < size - 1; i++) {
-        bool swapped = false;
-
-        for (int j = 0; j < size - 1 - i; j++) {
-            if (bookList[j].title > bookList[j + 1].title) {
-                Book temp       = bookList[j];
-                bookList[j]     = bookList[j + 1];
-                bookList[j + 1] = temp;
-                swapped = true;
-            }
-        }
-
-        // already sorted, no need to continue
-        if (!swapped) break;
-    }
-}
-
-// -------------------------------------------------------
-// SELECTION SORT
-// Chapter 8.3 - Sort by Book ID (number order)
-// Find the smallest ID from remaining, swap to front
-// -------------------------------------------------------
-void selectionSort(Book* bookList, int size) {
-
-    for (int i = 0; i < size - 1; i++) {
-
-        int minIndex = i;
-
-        for (int j = i + 1; j < size; j++) {
-            if (bookList[j].bookID < bookList[minIndex].bookID)
-                minIndex = j;
-        }
-
-        if (minIndex != i) {
-            Book temp          = bookList[i];
-            bookList[i]        = bookList[minIndex];
-            bookList[minIndex] = temp;
-        }
-    }
-}
-
-// -------------------------------------------------------
-// INSERTION SORT
-// Chapter 8.2 - Sort by Author A to Z
-// Pick one card at a time and insert it in the right place
-// -------------------------------------------------------
-void insertionSort(Book* bookList, int size) {
-
-    for (int i = 1; i < size; i++) {
-        Book current = bookList[i];
-        int j = i - 1;
-
-        // shift books with author name bigger than current to the right
-        while (j >= 0 && bookList[j].author > current.author) {
-            bookList[j + 1] = bookList[j];
-            j--;
-        }
-
-        // put current book in its correct position
-        bookList[j + 1] = current;
-    }
-}
-
-// -------------------------------------------------------
-// Helper: print search result table
-// Used by searchBook to keep the display code clean
-// -------------------------------------------------------
-void printSearchTable(Book* bookList, int size, string kw, int field, bool isAdmin) {
-
-    bool anyFound = false;
-
-    // lowercase the keyword
-    string kwLow = kw;
-    for (int i = 0; i < (int)kwLow.size(); i++)
-        kwLow[i] = tolower(kwLow[i]);
-
-    cout << left
-         << setw(8)  << "ID"
-         << setw(38) << "Title"
-         << setw(22) << "Author"
-         << setw(14) << "Category";
-
-    if (isAdmin) cout << setw(8) << "Stock";
-    cout << "Status" << endl;
-    cout << string(isAdmin ? 98 : 90, '-') << endl;
-
-    for (int i = 0; i < size; i++) {
-        string target = "";
-        if (field == 0)      target = bookList[i].title;
-        else if (field == 1) target = bookList[i].author;
-        else if (field == 2) target = bookList[i].category;
-
-        string targetLow = target;
-        for (int j = 0; j < (int)targetLow.size(); j++)
-            targetLow[j] = tolower(targetLow[j]);
-
-        if (targetLow.find(kwLow) != string::npos) {
-            anyFound = true;
-
-            string title  = bookList[i].title;
-            string author = bookList[i].author;
-            if ((int)title.size()  > 36) title  = title.substr(0, 33)  + "...";
-            if ((int)author.size() > 20) author = author.substr(0, 17) + "...";
-
-            cout << left
-                 << setw(8)  << bookList[i].bookID
-                 << setw(38) << title
-                 << setw(22) << author
-                 << setw(14) << bookList[i].category;
-
-            if (isAdmin) cout << setw(8) << bookList[i].stock;
-            cout << bookList[i].status << endl;
-        }
-    }
-
-    if (!anyFound)
-        cout << "  No books found matching \"" << kw << "\"." << endl;
-
-    cout << endl;
-}
-
-// -------------------------------------------------------
-// SEARCH BOOK MENU
-// Customer: search by Title, Author, Category (no stock shown)
-// Admin:    same options + shows stock count
-//
-// Method used:
-//   Title / Author / Category -> Linear Search (sequential scan)
-//   Book ID                   -> Binary Search (needs sorted list first)
-// -------------------------------------------------------
-void searchBook(string username, bool isAdmin) {
-
-    int size = 0;
-    Book* bookList = LoadBooks(size);
-
-    if (size == 0 || bookList == nullptr) {
-        cout << "\nNo books in the library right now." << endl;
-        return;
-    }
-
-    cout << "\n== Search Book ==" << endl;
-    cout << "1. Search by Title    (Linear Search)" << endl;
-    cout << "2. Search by Author   (Linear Search)" << endl;
-    cout << "3. Search by Category (Linear Search)" << endl;
-    cout << "4. Search by Book ID  (Binary Search)" << endl;
-    cout << "5. Search by Year Range" << endl;
-    cout << "Enter choice: ";
-
-    int searchChoice;
-    cin >> searchChoice;
-    cin.ignore();
-
-    if (searchChoice == 1 || searchChoice == 2 || searchChoice == 3) {
-
-        string fieldName = "";
-        int    field     = 0;
-
-        if (searchChoice == 1) { fieldName = "title";    field = 0; }
-        if (searchChoice == 2) { fieldName = "author";   field = 1; }
-        if (searchChoice == 3) { fieldName = "category"; field = 2; }
-
-        cout << "Enter " << fieldName << " keyword: ";
-        string keyword;
-        getline(cin, keyword);
-
-        cout << "\n-- Search Results for \"" << keyword << "\" --" << endl;
-        printSearchTable(bookList, size, keyword, field, isAdmin);
-
-    } else if (searchChoice == 4) {
-
-        // Binary Search needs sorted list by ID first
-        // use selection sort to sort before searching
-        selectionSort(bookList, size);
-
-        cout << "Enter Book ID to search: ";
-        string targetID;
-        cin >> targetID;
-
-        int result = binarySearch(bookList, size, targetID);
-
-        if (result != -1) {
-            cout << "\n-- Book Found --" << endl;
-            cout << "ID       : " << bookList[result].bookID   << endl;
-            cout << "Title    : " << bookList[result].title    << endl;
-            cout << "Author   : " << bookList[result].author   << endl;
-            cout << "Category : " << bookList[result].category << endl;
-            cout << "Year     : " << bookList[result].year     << endl;
-
-            if (isAdmin)
-                cout << "Stock    : " << bookList[result].stock << endl;
-
-            cout << "Status   : " << bookList[result].status << endl;
-        } else {
-            cout << "\nBook ID \"" << targetID << "\" not found." << endl;
-        }
-        cout << endl;
-
-    } else if (searchChoice == 5) {
-
-        int fromYear, toYear;
-        cout << "Enter start year: ";
-        cin >> fromYear;
-        cout << "Enter end year: ";
-        cin >> toYear;
-
-        if (fromYear > toYear) {
-            int t = fromYear; fromYear = toYear; toYear = t;
-        }
-
-        cout << "\n-- Books published between " << fromYear
-             << " and " << toYear << " --" << endl;
-        cout << left << setw(10) << "ID" << setw(30) << "Title"
-             << setw(8) << "Year" << "Status" << endl;
-        cout << string(60, '-') << endl;
-
-        int found = 0;
-        for (int i = 0; i < size; i++) {
-            if (bookList[i].year >= fromYear && bookList[i].year <= toYear) {
-                string title = bookList[i].title;
-                if ((int)title.size() > 28) title = title.substr(0, 25) + "...";
-                cout << left << setw(10) << bookList[i].bookID
-                     << setw(30) << title
-                     << setw(8)  << bookList[i].year
-                     << bookList[i].status << endl;
-                found++;
-            }
-        }
-
-        if (found == 0)
-            cout << "No books found in that year range." << endl;
-        else
-            cout << "\nFound " << found << " book(s)." << endl;
-
+        cout << "Book deleted successfully! (Use 'Undo Last Delete' to restore.)" << endl;
     } else {
-        cout << "\nInvalid choice." << endl;
+        cout << "Book ID not found." << endl;
     }
 
     delete[] bookList;
 }
-
-// -------------------------------------------------------
-// MERGE SORT
-// Chapter 8.5 - Divide the list, sort each half, then merge
-// Sorts the books by publication year (oldest first)
-// -------------------------------------------------------
-void merge(Book* bookList, int left, int mid, int right) {
-    int n1 = mid - left + 1;
-    int n2 = right - mid;
-
-    Book* leftArr  = new Book[n1];
-    Book* rightArr = new Book[n2];
-
-    for (int i = 0; i < n1; i++) leftArr[i]  = bookList[left + i];
-    for (int j = 0; j < n2; j++) rightArr[j] = bookList[mid + 1 + j];
-
-    int i = 0, j = 0, k = left;
-
-    // take the smaller year each time and place it back into the list
-    while (i < n1 && j < n2) {
-        if (leftArr[i].year <= rightArr[j].year)
-            bookList[k++] = leftArr[i++];
-        else
-            bookList[k++] = rightArr[j++];
-    }
-
-    while (i < n1) bookList[k++] = leftArr[i++];
-    while (j < n2) bookList[k++] = rightArr[j++];
-
-    delete[] leftArr;
-    delete[] rightArr;
-}
-
-void mergeSort(Book* bookList, int left, int right) {
-    if (left < right) {
->>>>>>> ed688c2a6a893b3ad47f9f6d38fb99b16eb06df2
+ 
         int mid = (left + right) / 2;
         mergeSort(bookList, left, mid);
         mergeSort(bookList, mid + 1, right);
@@ -1641,7 +1134,7 @@ void quickSort(Book* bookList, int low, int high) {
 void sortBooks() {
 
     int size = 0;
-    Book* bookList = LoadBooks(size);
+    Book* bookList = loadBooks(size);
 
     if (size == 0 || bookList == nullptr) {
         cout << "\nNo books to sort." << endl;
@@ -1663,27 +1156,27 @@ void sortBooks() {
 
     if (sortChoice == 1) {
         bubbleSort(bookList, size);
-        SaveBooks(bookList, size);
+        saveBooks(bookList, size);
         sortLabel = "Title A to Z (Bubble Sort)";
 
     } else if (sortChoice == 2) {
         selectionSort(bookList, size);
-        SaveBooks(bookList, size);
+        saveBooks(bookList, size);
         sortLabel = "Book ID (Selection Sort)";
 
     } else if (sortChoice == 3) {
         insertionSort(bookList, size);
-        SaveBooks(bookList, size);
+        saveBooks(bookList, size);
         sortLabel = "Author A to Z (Insertion Sort)";
 
     } else if (sortChoice == 4) {
         mergeSort(bookList, 0, size - 1);
-        SaveBooks(bookList, size);
+        saveBooks(bookList, size);
         sortLabel = "Year oldest first (Merge Sort)";
 
     } else if (sortChoice == 5) {
         quickSort(bookList, 0, size - 1);
-        SaveBooks(bookList, size);
+        saveBooks(bookList, size);
         sortLabel = "Stock most first (Quick Sort)";
 
     } else {
@@ -1812,7 +1305,7 @@ int overdueDays(string borrowDate, string returnDate, string status) {
 // look up a book title by its ID so reports read nicely instead of showing IDs
 string getBookTitle(string id) {
     int size = 0;
-    Book* bookList = LoadBooks(size);
+    Book* bookList = loadBooks(size);
     string title = "(unknown title)";
 
     for (int i = 0; i < size; i++) {
@@ -2610,7 +2103,7 @@ void saveReservations(Reservation* list, int size) {
 // Reserve Book - Customer only
 void reserveBook(string currentCustomer) {
     int size = 0;
-    Book* bookList = LoadBooks(size);
+    Book* bookList = loadBooks(size);
 
     if (size == 0 || bookList == nullptr) {
         cout << "\nNo books in the library to reserve." << endl;
@@ -2898,7 +2391,7 @@ void manageReservations() {
 // A quick breakdown of the collection by stock and category.
 void bookStatistics() {
     int size = 0;
-    Book* bookList = LoadBooks(size);
+    Book* bookList = loadBooks(size);
 
     if (size == 0 || bookList == nullptr) {
         cout << "\nNo books to analyse." << endl;
@@ -3015,7 +2508,7 @@ void forceReturn() {
     cin >> id;
 
     int size = 0;
-    Book* bookList = LoadBooks(size);
+    Book* bookList = loadBooks(size);
     bool bookFound = false;
 
     for (int i = 0; i < size; i++) {
@@ -3064,7 +2557,7 @@ void forceReturn() {
     rename("TempRecords.txt", "BorrowRecords.txt");
 
     if (updated) {
-        SaveBooks(bookList, size);
+        saveBooks(bookList, size);
         cout << "Book returned on behalf of " << cust << "." << endl;
     } else {
         // no matching loan, so undo the stock change we made earlier
@@ -3076,7 +2569,7 @@ void forceReturn() {
                 break;
             }
         }
-        SaveBooks(bookList, size);
+        saveBooks(bookList, size);
         cout << "No active loan found for that customer and book." << endl;
     }
 
@@ -3374,12 +2867,12 @@ void displayBooksFiltered() {
     cin >> choice;
 
     if (choice == 1) {
-        DisBooks();
+        displayBooks();
         return;
     }
 
     int size = 0;
-    Book* bookList = LoadBooks(size);
+    Book* bookList = loadBooks(size);
     if (size == 0 || bookList == nullptr) {
         cout << "No books found." << endl;
         return;
