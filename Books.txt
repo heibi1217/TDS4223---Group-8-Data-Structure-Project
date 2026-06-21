@@ -1,4 +1,9 @@
 53|Weathering With You|Makoto Shinkai|Romance & Drama|2019|10|Available
+37|Harry Potter and the Order of the Phoenix|J.K. Rowling|Fantasy|2003|2|Available
+39|Harry Potter and the Deathly Hallows|J.K. Rowling|Fantasy|2007|2|Available
+40|Norwegian Wood|Murakami Haruki|Literary Realism|1987|2|Available
+41|The Shining|Stephen Edwin King|Horror|1977|2|Available
+42|Blackwater|Michael McDowell|Horror|1983|2|Available
 38|Harry Potter and the Half-Blood Prince|J.K. Rowling|Fantasy|2005|2|Available
 1|The Devotion of Suspect X|Higashino Keigo|Mystery|2005|2|Available
 4|Malice: A Mystery|Higashino Keigo|Mystery|1996|2|Available
@@ -6,11 +11,11 @@
 34|Harry Potter and the Chamber of Secrets|J.K. Rowling|Fantasy|1998|2|Available
 35|Harry Potter and the Prisoner of Azkaban|J.K. Rowling|Fantasy|1999|2|Available
 36|Harry Potter and the Goblet of Fire|J.K. Rowling|Fantasy|2000|2|Available
-37|Harry Potter and the Order of the Phoenix|J.K. Rowling|Fantasy|2003|2|Available
-39|Harry Potter and the Deathly Hallows|J.K. Rowling|Fantasy|2007|2|Available
-40|Norwegian Wood|Murakami Haruki|Literary Realism|1987|2|Available
-41|The Shining|Stephen Edwin King|Horror|1977|2|Available
-42|Blackwater|Michael McDowell|Horror|1983|2|Available
+47|Sword Art Online Mother's Rosario|Kawahara Reki|Sci-Fi|2011|1|Available
+48|The Daughter of Evil:Cloture of Yellow|Akuno-P|Dark Fantasy|2010|1|Available
+49|The Daughter of Evil:Wiegenlied of Green|Akuno-P|Dark Fantasy|2011|1|Available
+50|The Daughter of Evil:Praeludium of Red|Akuno-P|Dark Fantasy|2011|1|Available
+51|The Daughter of Evil:Praefacio of Blue|Akuno-P|Dark Fantasy|2012|1|Available
 2|Salvation of a Saint|Higashino Keigo|Mystery|2008|1|Available
 14|Omniscient Reader's Viewpoint 9|sing N song|Metafiction|2023|1|Available
 15|Omniscient Reader's Viewpoint 10|sing N song|Metafiction|2023|1|Available
@@ -44,9 +49,4 @@
 44|The Tale of the Bamboo Cutter|Unknown|Monogatari|0|1|Available
 45|Cosmic Princess Kaguya! Novelisation|Kiriyama Naruto|Sci-Fi|2026|1|Available
 46|Pantai Kasih|Azmah Nordin|Social|1994|1|Available
-47|Sword Art Online Mother's Rosario|Kawahara Reki|Sci-Fi|2011|1|Available
-48|The Daughter of Evil:Cloture of Yellow|Akuno-P|Dark Fantasy|2010|1|Available
-49|The Daughter of Evil:Wiegenlied of Green|Akuno-P|Dark Fantasy|2011|1|Available
-50|The Daughter of Evil:Praeludium of Red|Akuno-P|Dark Fantasy|2011|1|Available
-51|The Daughter of Evil:Praefacio of Blue|Akuno-P|Dark Fantasy|2012|1|Available
 3|Journey Under the Midnight Sun|Higashino Keigo|Mystery|1999|0|Borrowed

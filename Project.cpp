@@ -617,7 +617,7 @@ void returnBook(string currentCustomer) {
 }
 
 
-// Report Generation and TXT File Management (Tsui Hern's part)
+// Report Generation and TXT File Management (Zhong Bao's part)
 void generateReport() {
     try {
         int totalBooks = CountBooks();
@@ -1150,7 +1150,6 @@ void DisBooks(){
 }
 
 // PART D - Search and Sort  (Zhong Bao's part)
-
 // Returns index if found, -1 if not found
 // Used for: search by title keyword, search by author, search by category
 int linearSearch(Book* bookList, int size, string keyword, int field) {
