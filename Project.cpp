@@ -6,8 +6,7 @@
 #include <ctime>
 using namespace std;
 
-// get today's date from the computer
-string getTodayDate() {
+string getTodayDate() {   // get today's date from the computer
     time_t now = time(nullptr);
     tm* t = localtime(&now);
     char buf[11];
@@ -15,9 +14,7 @@ string getTodayDate() {
     return string(buf);
 }
 
-// make sure each borrow record gets a different ID
-// count how many times the same book was borrowed before and add 1
-string generateBorrowID(const string& bookYear, const string& bookID) {
+string generateBorrowID(const string& bookYear, const string& bookID) {   // make sure each borrow record gets a different ID; count how many times the same book was borrowed before and add 1
     string base = "BR" + bookYear + bookID + "-";
     ifstream f("BorrowRecords.txt");
     int count = 0;
@@ -28,8 +25,7 @@ string generateBorrowID(const string& bookYear, const string& bookID) {
     return base + to_string(count + 1);
 }
 
-// forward declarations so functions can call each other freely
-void searchBook(string username, bool isAdmin);
+void searchBook(string username, bool isAdmin);   // forward declarations so functions can call each other freely
 void sortBooks();
 void borrowBook(string currentCustomer);
 void returnBook(string currentCustomer);
@@ -37,35 +33,30 @@ void generateReport();
 void viewReport();
 int  CountBooks();
 
-// customer account management (Admin side)
-void manageCustomers();
+void manageCustomers();   // customer account management (Admin side)
 void viewAllCustomers();
 void searchCustomer();
 void sortCustomers();
 void editCustomerPassword();
 void deleteCustomer();
 
-// borrowing history and fines
-void viewBorrowRecords();
+void viewBorrowRecords();   // borrowing history and fines
 void editBorrowRecord();
 void overdueReport();
 void myBorrowHistory(string currentCustomer);
 void checkMyFines(string currentCustomer);
 
-// customer profile
-void myProfile(string currentCustomer);
+void myProfile(string currentCustomer);   // customer profile
 void changeMyPassword(string currentCustomer);
 
-// book reservations (Queue based)
-void reserveBook(string currentCustomer);
+void reserveBook(string currentCustomer);   // book reservations (Queue based)
 void myReservations(string currentCustomer);
 void cancelReservation(string currentCustomer);
 void manageReservations();
 void viewAllReservations();
 void processReservation();
 
-// extra admin / customer actions
-void bookStatistics();
+void bookStatistics();   // extra admin / customer actions
 void renewBook(string currentCustomer);
 void forceReturn();
 void manageAdmins();
@@ -73,8 +64,7 @@ void topBorrowedBooks();
 void restoreLastDeleted();
 void displayBooksFiltered();
 
-// helpers defined later but needed by the summary report
-int  countReservations();
+int  countReservations();   // helpers defined later but needed by the summary report
 int  overdueDays(string borrowDate, string returnDate, string status);
 int  readInt(string prompt);
 
@@ -97,8 +87,7 @@ struct BookRecord {
     string borrowStatus;
 };
 
-// ADT Queue - used in borrow and return book
-class ADTqueue {
+class ADTqueue {   // ADT Queue - used in borrow and return book
     private:
         string queue[10];
         int head, tail;
@@ -141,11 +130,7 @@ class ADTqueue {
         }
 };
 
-// -------------------------------------------------------
-// Linked Stack - keeps the books an admin deletes so the
-// most recent deletion can be undone (LIFO).
-// -------------------------------------------------------
-struct StackNode {
+struct StackNode {   // Linked Stack - keeps the books an admin deletes so the; most recent deletion can be undone (LIFO).
     Book data;
     StackNode* next;
 };
@@ -192,15 +177,9 @@ class BookStack {
         }
 };
 
-// holds books removed during the current admin session
-BookStack deletedBooks;
+BookStack deletedBooks;   // holds books removed during the current admin session
 
-// -------------------------------------------------------
-// Account base class and subclasses
-// -------------------------------------------------------
-// everyone in the system is a person first, so the shared identity
-// (the username) lives here. Account then builds on it with the login info.
-class Person
+class Person   // Account base class and subclasses; everyone in the system is a person first, so the shared identity; (the username) lives here. Account then builds on it with the login info.
 {
 	protected:
 		string username;
@@ -273,8 +252,7 @@ class Admin : public Account
 		void setPassword(string p) { password = p; }
 };
 
-// guest is a visitor that has not login yet (used in Help / About)
-class Guest : public Account
+class Guest : public Account   // guest is a visitor that has not login yet (used in Help / About)
 {
 	public:
 		Guest()
@@ -286,9 +264,7 @@ class Guest : public Account
 		~Guest() {}
 };
 
-// friend functions to print the welcome card after login
-// they can read the protected username and role
-void displayAccount(const Account& a)
+void displayAccount(const Account& a)   // friend functions to print the welcome card after login; they can read the protected username and role
 {
 	cout << "Account : " << a.username << " (" << a.role << ")" << endl;
 }
@@ -317,10 +293,7 @@ void displayGuest(const Account& a)
 	cout << "--------------------------------" << endl;
 }
 
-// =========================
-// Register / Login / Logout
-// =========================
-void registerUser()
+void registerUser()   // Register / Login / Logout
 {
 	string u, p;
 	string fu, fp, frole;
@@ -332,8 +305,7 @@ void registerUser()
 	cin >> p;
 	cout << endl;
 
-	// check first so the same username is not used twice
-	ifstream checkFile("Customer.txt");
+	ifstream checkFile("Customer.txt");   // check first so the same username is not used twice
 	while(getline(checkFile, fu, '|') && getline(checkFile, fp, '|') && getline(checkFile, frole))
 	{
 		if(u == fu)
@@ -413,10 +385,7 @@ void logout()
 	cout << "\nLogging out... Goodbye!" << endl << endl;
 }
 
-// -------------------------------------------------------
-// File helpers - count, load, save books
-// -------------------------------------------------------
-int CountBooks(){
+int CountBooks(){   // File helpers - count, load, save books
     ifstream file("Books.txt");
     if(!file.is_open())
 		return 0;
@@ -447,8 +416,7 @@ Book* LoadBooks(int& size){
         getline(file, tempStock, '|');
         getline(file, bookList[i].status);
 
-        // some books may have a non-numeric year like "Unknown"
-        try{
+        try{   // some books may have a non-numeric year like "Unknown"
             if(!tempYear.empty() && tempYear != "Unknown")
                 bookList[i].year = stoi(tempYear);
             else
@@ -472,7 +440,7 @@ Book* LoadBooks(int& size){
 
 void SaveBooks(Book* bookList, int size){
     ofstream file("Books.txt", ios::trunc);
-	
+
     for(int i = 0; i < size; i++){
         file <<bookList[i].bookID<<"|"
              <<bookList[i].title<<"|"
@@ -485,9 +453,6 @@ void SaveBooks(Book* bookList, int size){
     file.close();
 }
 
-// -------------------------------------------------------
-// Borrow Book (Wen Zhe's part)
-// -------------------------------------------------------
 void borrowBook(string currentCustomer) {
     cin.ignore(10000, '\n');
     cout << "\n== Borrow Book ==" << endl;
@@ -549,9 +514,6 @@ void borrowBook(string currentCustomer) {
     delete[] bookList;
 }
 
-// -------------------------------------------------------
-// Return Book (Wen Zhe's part)
-// -------------------------------------------------------
 void returnBook(string currentCustomer) {
     cin.ignore(10000, '\n');
     cout << "\n=== Return Book ===" << endl;
@@ -598,7 +560,6 @@ void returnBook(string currentCustomer) {
     while (getline(readFile, bID, '|') && getline(readFile, custID, '|') &&
            getline(readFile, bkID, '|') && getline(readFile, bDate, '|') &&
            getline(readFile, rDate, '|') && getline(readFile, bStatus)) {
-
         if (custID == currentCustomer && bkID == id && bStatus == "Borrowed" && !recordUpdated) {
             string returnDate = getTodayDate();
             tempFile << bID << "|" << custID << "|" << bkID << "|"
@@ -635,10 +596,6 @@ void returnBook(string currentCustomer) {
     delete[] bookList;
 }
 
-
-// -------------------------------------------------------
-// Report Generation and TXT File Management (Tsui Hern's part)
-// -------------------------------------------------------
 void generateReport() {
     try {
         int totalBooks = CountBooks();
@@ -759,16 +716,13 @@ void viewReport() {
     }
 }
 
-//Yvonne's part (Add / Display / Edit / Delete Books)
 class MBooks{
 public:
     void AddBook(){
         cout <<"\n== Add New Book =="<<endl;
         Book newBook;
-        
-        // Find the largest Book ID already in use and add one,
-        // so the system gives the new book a unique ID by itself
-        int existSize = 0;
+
+        int existSize = 0;   // Find the largest Book ID already in use and add one,; so the system gives the new book a unique ID by itself
         Book* existing = LoadBooks(existSize);
         int maxID = 0;
         for(int i = 0; i < existSize; i++){
@@ -776,32 +730,30 @@ public:
                 int id = stoi(existing[i].bookID);
                 if (id > maxID) maxID = id;
             } catch (...){
-                // Skip any book whose ID is not a plain number
-            }
+            }   // Skip any book whose ID is not a plain number
         }
         if(existing != nullptr) delete[] existing;
-        
+
         newBook.bookID = to_string(maxID + 1);
         cout << "Auto-generated Book ID: " << newBook.bookID << endl;
-        
+
         cin.ignore(10000, '\n');
         cout << "Enter Title: "; getline(cin, newBook.title);
         cout << "Enter Author: "; getline(cin, newBook.author);
         cout << "Enter Category: "; getline(cin, newBook.category);
         newBook.year  = readInt("Enter Publication Year: ");
         newBook.stock = readInt("Enter Stock Quantity: ");
-        
+
         newBook.status = (newBook.stock > 0) ? "Available" : "Borrowed";
-        
+
         ofstream file("Books.txt", ios::app);
         file<<newBook.bookID<<"|"<< newBook.title<<"|"
             <<newBook.author<<"|"<<newBook.category<<"|"
             <<newBook.year<<"|"<<newBook.stock<<"|"
             <<newBook.status<<endl;
         file.close();
-        
-        // Show the full details of the book that was just added
-        cout<< "\nBook successfully added!" << endl;
+
+        cout<< "\nBook successfully added!" << endl;   // Show the full details of the book that was just added
         cout<< "-----------------------------" << endl;
         cout<< "Book ID  : "<<newBook.bookID << endl;
         cout<< "Title    : "<<newBook.title<<endl;
@@ -816,65 +768,64 @@ public:
     void EditBook(){
         int size = 0;
         Book* bookList = LoadBooks(size);
-        
+
         if(size == 0){
             cout<<"No books available to edit."<<endl;
             return;
         }
-        
-        // Show a quick list of ID and title so the admin does not have to guess
-        cout<<"\n-- Current Books --"<<endl;
+
+        cout<<"\n-- Current Books --"<<endl;   // Show a quick list of ID and title so the admin does not have to guess
         for(int i = 0; i < size; i++){
             cout<<left << setw(6)<<bookList[i].bookID
                 <<bookList[i].title<<endl;
         }
-        
+
         string id;
         cout<<"\nEnter Book ID to edit (0 to cancel): ";
         cin>>id;
-        
+
         if(id == "0"){
             cout<<"Edit cancelled."<<endl;
             delete[] bookList;
             return;
         }
-        
+
         bool found = false;
         for(int i = 0; i < size; i++){
             if(bookList[i].bookID == id){
                 found = true;
                 cout<<"\nBook Found! Current Title: "<<bookList[i].title<<endl;
                 cin.ignore(10000, '\n');
-                
+
                 cout<<"Enter New Title (or press Enter to keep current): ";
                 string temp;
                 getline(cin, temp);
                 if (!temp.empty()) bookList[i].title = temp;
-                
+
                 cout<<"Enter New Author (or press Enter to keep current): ";
                 getline(cin, temp);
                 if(!temp.empty()) bookList[i].author = temp;
-                
+
                 cout<<"Enter New Category (or press Enter to keep current): ";
                 getline(cin, temp);
                 if (!temp.empty()) bookList[i].category = temp;
-                
+
                 cout<<"Enter New Publication Year (Enter -1 to keep current): ";
                 int newYear;
                 cin >> newYear;
                 if(newYear >= 0) bookList[i].year = newYear;
-                
+
                 cout<<"Enter New Stock Quantity (Enter -1 to keep current): ";
                 int newStock;
                 cin>>newStock;
-                
+
                 if(newStock >= 0){
                     bookList[i].stock = newStock;
                     bookList[i].status = (newStock > 0) ? "Available" : "Borrowed";
                 }break;
             }
         }
-        
+
         if(found){
             SaveBooks(bookList, size);
             cout<<"Book details updated successfully!"<<endl;
@@ -887,29 +838,28 @@ public:
     void DelBook(){
         int size = 0;
         Book* bookList = LoadBooks(size);
-        
+
         if(size == 0){
             cout<<"No books available to delete."<<endl;
             return;
         }
-        
-        // Show a quick list of ID and title so the admin does not have to guess
-        cout<<"\n-- Current Books --"<<endl;
+
+        cout<<"\n-- Current Books --"<<endl;   // Show a quick list of ID and title so the admin does not have to guess
         for(int i = 0; i < size; i++){
             cout<<left<<setw(6)<<bookList[i].bookID
                 << bookList[i].title<<endl;
         }
-        
+
         string id;
         cout<<"\nEnter Book ID to delete (0 to cancel): ";
         cin>>id;
-        
+
         if(id == "0"){
             cout<<"Delete cancelled."<<endl;
             delete[] bookList;
             return;
         }
-        
+
         int DelIndex = -1;
         for(int i = 0; i < size; i++){
             if(bookList[i].bookID == id){
@@ -917,11 +867,10 @@ public:
                 break;
             }
         }
-        
+
         if(DelIndex != -1){
-            // Keep a copy on the stack so the deletion can be undone later
-            deletedBooks.push(bookList[DelIndex]);
-            
+            deletedBooks.push(bookList[DelIndex]);   // Keep a copy on the stack so the deletion can be undone later
+
             Book* newBookList = new Book[size - 1];
             int j = 0;
             for(int i = 0; i < size; i++){
@@ -930,7 +879,7 @@ public:
             }
             SaveBooks(newBookList, size - 1);
             delete[] newBookList;
-            
+
             cout<<"Book deleted successfully! (Use 'Undo Last Delete' to restore.)"<<endl;
         } else{
             cout<<"Book ID not found."<<endl;
@@ -941,12 +890,12 @@ public:
     void DisBooks(){
         int size = 0;
         Book* bookList = LoadBooks(size);
-        
+
         if(size == 0 || bookList == nullptr){
             cout<<"\nNo books found in the library."<<endl;
             return;
         }
-        
+
         cout<<"\n========================================= Book List ========================================="<<endl;
         cout<<left << setw(10)<<"ID"
             <<setw(25)<<"Title"
@@ -956,7 +905,7 @@ public:
             <<setw(8)<<"Stock"
             <<"Status"<<endl;
         cout<<"---------------------------------------------------------------------------------------------"<<endl;
-        
+
         for(int i = 0; i < size; i++){
             cout<<left << setw(10)<<bookList[i].bookID
                 <<setw(25)<<bookList[i].title.substr(0, 23)
@@ -967,15 +916,12 @@ public:
                 <<bookList[i].status<<endl;
         }
         cout<<"============================================================================================="<<endl;
-        
+
         delete[] bookList;
     }
 };
 
-// =========================
-// Customer and Admin menus
-// =========================
-void customerMenu(string username)
+void customerMenu(string username)   // Customer and Admin menus
 {
 	int choice;
 	do
@@ -1070,8 +1016,7 @@ void adminMenu(string username)
 	logout();
 }
 
-// help / about screen, can be opened from the main menu
-void showHelp()
+void showHelp()   // help / about screen, can be opened from the main menu
 {
 	Guest visitor;
 	displayGuest(visitor); // greet the visitor that is not login yet
@@ -1095,8 +1040,7 @@ void showHelp()
 	cout << "===========================================" << endl;
 }
 
-// banner that shows one time when the program starts
-void showWelcomeBanner()
+void showWelcomeBanner()   // banner that shows one time when the program starts
 {
 	cout << "*********************************************" << endl;
 	cout << "*      Group 8 - Library Book Records       *" << endl;
@@ -1105,10 +1049,7 @@ void showWelcomeBanner()
 	cout << endl;
 }
 
-// =========================
-// Main
-// =========================
-int main()
+int main()   // Main
 {
 	int choice;
 	showWelcomeBanner();
@@ -1128,8 +1069,7 @@ int main()
 
 		if(choice == 1)
 		{
-			// try catch so a failed login does not crash the program
-			try
+			try   // try catch so a failed login does not crash the program
 			{
 				string loggedIn = loginUser();
 				if(loggedIn.empty()) throw "Login failed!";
@@ -1178,21 +1118,8 @@ int main()
 	return 0;
 }
 
-// =======================================================
-// PART D - Search and Sort  (Zhong Bao's part)
-// =======================================================
-
-// -------------------------------------------------------
-// LINEAR SEARCH
-// Chapter 6.2 - Sequential Search
-// Goes through every book one by one
-// Returns index if found, -1 if not found
-// Used for: search by title keyword, search by author, search by category
-// -------------------------------------------------------
-int linearSearch(Book* bookList, int size, string keyword, int field) {
-    // field 0 = title, 1 = author, 2 = category
-
-    string kw = keyword;
+int linearSearch(Book* bookList, int size, string keyword, int field) {   // Goes through every book one by one; Returns index if found, -1 if not found; Used for: search by title keyword, search by author, search by category
+    string kw = keyword;   // field 0 = title, 1 = author, 2 = category
     for (int i = 0; i < (int)kw.size(); i++)
         kw[i] = tolower(kw[i]);
 
@@ -1203,8 +1130,7 @@ int linearSearch(Book* bookList, int size, string keyword, int field) {
         else if (field == 1) target = bookList[i].author;
         else if (field == 2) target = bookList[i].category;
 
-        // convert to lowercase before comparing
-        for (int j = 0; j < (int)target.size(); j++)
+        for (int j = 0; j < (int)target.size(); j++)   // convert to lowercase before comparing
             target[j] = tolower(target[j]);
 
         if (target.find(kw) != string::npos)
@@ -1214,27 +1140,17 @@ int linearSearch(Book* bookList, int size, string keyword, int field) {
     return -1;
 }
 
-// -------------------------------------------------------
-// BINARY SEARCH
-// Chapter 6.3 - Divide and Conquer
-// List MUST be sorted by bookID before calling this
-// Searches by exact Book ID
-// -------------------------------------------------------
-int binarySearch(Book* bookList, int size, string targetID) {
-
+int binarySearch(Book* bookList, int size, string targetID) {   // List MUST be sorted by bookID before calling this; Searches by exact Book ID
     int first = 0;
     int last  = size - 1;
 
     while (first <= last) {
-
         int mid = (first + last) / 2;   // find the middle
 
         if (bookList[mid].bookID == targetID) {
             return mid;   // found
-
         } else if (bookList[mid].bookID < targetID) {
             first = mid + 1;   // target is in the right half
-
         } else {
             last = mid - 1;    // target is in the left half
         }
@@ -1243,14 +1159,7 @@ int binarySearch(Book* bookList, int size, string targetID) {
     return -1;   // not found
 }
 
-// -------------------------------------------------------
-// BUBBLE SORT
-// Chapter 8.4 - Sort by Title A to Z
-// Compares neighbours, swaps if out of order
-// Stops early if no swap happened in a full pass
-// -------------------------------------------------------
-void bubbleSort(Book* bookList, int size) {
-
+void bubbleSort(Book* bookList, int size) {   // Compares neighbours, swaps if out of order; Stops early if no swap happened in a full pass
     for (int i = 0; i < size - 1; i++) {
         bool swapped = false;
 
@@ -1263,20 +1172,13 @@ void bubbleSort(Book* bookList, int size) {
             }
         }
 
-        // already sorted, no need to continue
-        if (!swapped) break;
+        if (!swapped) break;   // already sorted, no need to continue
     }
 }
 
-// -------------------------------------------------------
-// SELECTION SORT
-// Chapter 8.3 - Sort by Book ID (number order)
-// Find the smallest ID from remaining, swap to front
-// -------------------------------------------------------
-void selectionSort(Book* bookList, int size) {
+void selectionSort(Book* bookList, int size) {   // Find the smallest ID from remaining, swap to front
 
     for (int i = 0; i < size - 1; i++) {
-
         int minIndex = i;
 
         for (int j = i + 1; j < size; j++) {
@@ -1292,38 +1194,25 @@ void selectionSort(Book* bookList, int size) {
     }
 }
 
-// -------------------------------------------------------
-// INSERTION SORT
-// Chapter 8.2 - Sort by Author A to Z
-// Pick one card at a time and insert it in the right place
-// -------------------------------------------------------
-void insertionSort(Book* bookList, int size) {
+void insertionSort(Book* bookList, int size) {   // Pick one card at a time and insert it in the right place
 
     for (int i = 1; i < size; i++) {
         Book current = bookList[i];
         int j = i - 1;
 
-        // shift books with author name bigger than current to the right
-        while (j >= 0 && bookList[j].author > current.author) {
+        while (j >= 0 && bookList[j].author > current.author) {   // shift books with author name bigger than current to the right
             bookList[j + 1] = bookList[j];
             j--;
         }
 
-        // put current book in its correct position
-        bookList[j + 1] = current;
+        bookList[j + 1] = current;   // put current book in its correct position
     }
 }
 
-// -------------------------------------------------------
-// Helper: print search result table
-// Used by searchBook to keep the display code clean
-// -------------------------------------------------------
-void printSearchTable(Book* bookList, int size, string kw, int field, bool isAdmin) {
-
+void printSearchTable(Book* bookList, int size, string kw, int field, bool isAdmin) {   // Helper: print search result table; Used by searchBook to keep the display code clean
     bool anyFound = false;
 
-    // lowercase the keyword
-    string kwLow = kw;
+    string kwLow = kw;   // lowercase the keyword
     for (int i = 0; i < (int)kwLow.size(); i++)
         kwLow[i] = tolower(kwLow[i]);
 
@@ -1372,17 +1261,7 @@ void printSearchTable(Book* bookList, int size, string kw, int field, bool isAdm
     cout << endl;
 }
 
-// -------------------------------------------------------
-// SEARCH BOOK MENU
-// Customer: search by Title, Author, Category (no stock shown)
-// Admin:    same options + shows stock count
-//
-// Method used:
-//   Title / Author / Category -> Linear Search (sequential scan)
-//   Book ID                   -> Binary Search (needs sorted list first)
-// -------------------------------------------------------
-void searchBook(string username, bool isAdmin) {
-
+void searchBook(string username, bool isAdmin) {   // Customer: search by Title, Author, Category (no stock shown); Admin:    same options + shows stock count; Method used:; Title / Author / Category -> Linear Search (sequential scan); Book ID                   -> Binary Search (needs sorted list first)
     int size = 0;
     Book* bookList = LoadBooks(size);
 
@@ -1404,7 +1283,6 @@ void searchBook(string username, bool isAdmin) {
     cin.ignore(10000, '\n');
 
     if (searchChoice == 1 || searchChoice == 2 || searchChoice == 3) {
-
         string fieldName = "";
         int    field     = 0;
 
@@ -1418,12 +1296,8 @@ void searchBook(string username, bool isAdmin) {
 
         cout << "\n-- Search Results for \"" << keyword << "\" --" << endl;
         printSearchTable(bookList, size, keyword, field, isAdmin);
-
     } else if (searchChoice == 4) {
-
-        // Binary Search needs sorted list by ID first
-        // use selection sort to sort before searching
-        selectionSort(bookList, size);
+        selectionSort(bookList, size);   // Binary Search needs sorted list by ID first; use selection sort to sort before searching
 
         cout << "Enter Book ID to search: ";
         string targetID;
@@ -1447,9 +1321,7 @@ void searchBook(string username, bool isAdmin) {
             cout << "\nBook ID \"" << targetID << "\" not found." << endl;
         }
         cout << endl;
-
     } else if (searchChoice == 5) {
-
         int fromYear, toYear;
         cout << "Enter start year: ";
         cin >> fromYear;
@@ -1483,7 +1355,6 @@ void searchBook(string username, bool isAdmin) {
             cout << "No books found in that year range." << endl;
         else
             cout << "\nFound " << found << " book(s)." << endl;
-
     } else {
         cout << "\nInvalid choice." << endl;
     }
@@ -1491,12 +1362,7 @@ void searchBook(string username, bool isAdmin) {
     delete[] bookList;
 }
 
-// -------------------------------------------------------
-// MERGE SORT
-// Chapter 8.5 - Divide the list, sort each half, then merge
-// Sorts the books by publication year (oldest first)
-// -------------------------------------------------------
-void merge(Book* bookList, int left, int mid, int right) {
+void merge(Book* bookList, int left, int mid, int right) {   // Sorts the books by publication year (oldest first)
     int n1 = mid - left + 1;
     int n2 = right - mid;
 
@@ -1508,8 +1374,7 @@ void merge(Book* bookList, int left, int mid, int right) {
 
     int i = 0, j = 0, k = left;
 
-    // take the smaller year each time and place it back into the list
-    while (i < n1 && j < n2) {
+    while (i < n1 && j < n2) {   // take the smaller year each time and place it back into the list
         if (leftArr[i].year <= rightArr[j].year)
             bookList[k++] = leftArr[i++];
         else
@@ -1532,18 +1397,12 @@ void mergeSort(Book* bookList, int left, int right) {
     }
 }
 
-// -------------------------------------------------------
-// QUICK SORT
-// Chapter 8.6 - Pick a pivot, push smaller items to its left
-// Sorts the books by stock quantity (most copies first)
-// -------------------------------------------------------
-int partition(Book* bookList, int low, int high) {
+int partition(Book* bookList, int low, int high) {   // Sorts the books by stock quantity (most copies first)
     int pivot = bookList[high].stock;
     int i = low - 1;
 
     for (int j = low; j < high; j++) {
-        // bigger stock goes to the left so the list ends up high to low
-        if (bookList[j].stock > pivot) {
+        if (bookList[j].stock > pivot) {   // bigger stock goes to the left so the list ends up high to low
             i++;
             Book temp     = bookList[i];
             bookList[i]   = bookList[j];
@@ -1565,17 +1424,7 @@ void quickSort(Book* bookList, int low, int high) {
     }
 }
 
-// -------------------------------------------------------
-// SORT BOOKS MENU (Admin only)
-// Sorting options, each saved back to Books.txt:
-//   1. Bubble Sort    - Title A to Z
-//   2. Selection Sort - Book ID
-//   3. Insertion Sort - Author A to Z
-//   4. Merge Sort     - Publication year
-//   5. Quick Sort     - Stock quantity
-// -------------------------------------------------------
-void sortBooks() {
-
+void sortBooks() {   // SORT BOOKS MENU (Admin only); Sorting options, each saved back to Books.txt:; 1. Bubble Sort    - Title A to Z; 2. Selection Sort - Book ID; 3. Insertion Sort - Author A to Z; 4. Merge Sort     - Publication year; 5. Quick Sort     - Stock quantity
     int size = 0;
     Book* bookList = LoadBooks(size);
 
@@ -1601,27 +1450,22 @@ void sortBooks() {
         bubbleSort(bookList, size);
         SaveBooks(bookList, size);
         sortLabel = "Title A to Z (Bubble Sort)";
-
     } else if (sortChoice == 2) {
         selectionSort(bookList, size);
         SaveBooks(bookList, size);
         sortLabel = "Book ID (Selection Sort)";
-
     } else if (sortChoice == 3) {
         insertionSort(bookList, size);
         SaveBooks(bookList, size);
         sortLabel = "Author A to Z (Insertion Sort)";
-
     } else if (sortChoice == 4) {
         mergeSort(bookList, 0, size - 1);
         SaveBooks(bookList, size);
         sortLabel = "Year oldest first (Merge Sort)";
-
     } else if (sortChoice == 5) {
         quickSort(bookList, 0, size - 1);
         SaveBooks(bookList, size);
         sortLabel = "Stock most first (Quick Sort)";
-
     } else {
         cout << "\nInvalid choice." << endl;
         delete[] bookList;
@@ -1657,37 +1501,28 @@ void sortBooks() {
     delete[] bookList;
 }
 
-// =======================================================
-// PART E - Customer Accounts, Borrowing History and Fines
-// =======================================================
-
-// loan rules used when calculating fines
-const string SYSTEM_TODAY = "2026-06-15";   // current date the system runs on
+const string SYSTEM_TODAY = "2026-06-15";   // current date the system runs on   // loan rules used when calculating fines
 const int    LOAN_DAYS    = 14;             // a book is due 14 days after borrowing
 const double FINE_PER_DAY = 0.50;           // RM charged for each late day
 
-// one customer account loaded from Customer.txt
-struct CustomerAcc {
+struct CustomerAcc {   // one customer account loaded from Customer.txt
     string username;
     string password;
     string role;
 };
 
-// turn any text into lowercase so searches are not case sensitive
-string toLowerStr(string text) {
+string toLowerStr(string text) {   // turn any text into lowercase so searches are not case sensitive
     for (int i = 0; i < (int)text.size(); i++)
         text[i] = tolower(text[i]);
     return text;
 }
 
-// remove whatever is still sitting in the input buffer before a getline
-void clearInputBuffer() {
+void clearInputBuffer() {   // remove whatever is still sitting in the input buffer before a getline
     cin.clear();
     cin.ignore(10000, '\n');
 }
 
-// ask a simple yes / no question, returns true only on y or yes
-bool askYesNo(string question) {
+bool askYesNo(string question) {   // ask a simple yes / no question, returns true only on y or yes
     string answer;
     cout << question << " (y/n): ";
     cin >> answer;
@@ -1695,8 +1530,7 @@ bool askYesNo(string question) {
     return (answer == "y" || answer == "yes");
 }
 
-// read a whole number and keep asking until the user types a valid one
-int readInt(string prompt) {
+int readInt(string prompt) {   // read a whole number and keep asking until the user types a valid one
     int value;
     while (true) {
         cout << prompt;
@@ -1709,9 +1543,7 @@ int readInt(string prompt) {
     }
 }
 
-// convert a YYYY-MM-DD date into a running day number so two dates can be
-// compared and subtracted. Returns 0 for blank dates like "---".
-int dateToDays(string date) {
+int dateToDays(string date) {   // convert a YYYY-MM-DD date into a running day number so two dates can be; compared and subtracted. Returns 0 for blank dates like "---".
     if (date.size() < 10) return 0;
 
     try {
@@ -1731,9 +1563,7 @@ int dateToDays(string date) {
     }
 }
 
-// work out how many days a record is overdue. A returned book is compared
-// against its real return date, a book still on loan against today.
-int overdueDays(string borrowDate, string returnDate, string status) {
+int overdueDays(string borrowDate, string returnDate, string status) {   // work out how many days a record is overdue. A returned book is compared; against its real return date, a book still on loan against today.
     int due = dateToDays(borrowDate) + LOAN_DAYS;
     int checkDay;
 
@@ -1747,8 +1577,7 @@ int overdueDays(string borrowDate, string returnDate, string status) {
     return late;
 }
 
-// look up a book title by its ID so reports read nicely instead of showing IDs
-string getBookTitle(string id) {
+string getBookTitle(string id) {   // look up a book title by its ID so reports read nicely instead of showing IDs
     int size = 0;
     Book* bookList = LoadBooks(size);
     string title = "(unknown title)";
@@ -1764,10 +1593,7 @@ string getBookTitle(string id) {
     return title;
 }
 
-// -------------------------------------------------------
-// Customer account file helpers (dynamic array, new / delete)
-// -------------------------------------------------------
-int countCustomers() {
+int countCustomers() {   // Customer account file helpers (dynamic array, new / delete)
     ifstream file("Customer.txt");
     if (!file.is_open()) return 0;
 
@@ -1806,11 +1632,7 @@ void saveCustomers(CustomerAcc* list, int size) {
     file.close();
 }
 
-// -------------------------------------------------------
-// Manage Customers - Admin only sub menu
-// View, search, sort, reset password or delete a customer.
-// -------------------------------------------------------
-void viewAllCustomers() {
+void viewAllCustomers() {   // Manage Customers - Admin only sub menu; View, search, sort, reset password or delete a customer.
     int size = 0;
     CustomerAcc* list = loadCustomers(size);
 
@@ -1878,8 +1700,7 @@ void sortCustomers() {
         return;
     }
 
-    // bubble sort by username A to Z, then save back to the file
-    for (int i = 0; i < size - 1; i++) {
+    for (int i = 0; i < size - 1; i++) {   // bubble sort by username A to Z, then save back to the file
         for (int j = 0; j < size - 1 - i; j++) {
             if (toLowerStr(list[j].username) > toLowerStr(list[j + 1].username)) {
                 CustomerAcc temp = list[j];
@@ -2018,11 +1839,7 @@ void manageCustomers() {
     } while (choice != 0);
 }
 
-// =======================================================
-// Borrow records held in a singly linked list (DNP structure)
-// Used by the admin record viewer and the customer history.
-// =======================================================
-struct RecordNode {
+struct RecordNode {   // Borrow records held in a singly linked list (DNP structure); Used by the admin record viewer and the customer history.
     BookRecord data;
     RecordNode* next;
 };
@@ -2032,8 +1849,7 @@ class RecordList {
         RecordNode* headPtr;
         int count;
 
-        // pull out the field we want to sort or search on
-        string keyOf(BookRecord r, int field) {
+        string keyOf(BookRecord r, int field) {   // pull out the field we want to sort or search on
             if (field == 1) return r.customerID;
             if (field == 2) return r.borrowDate;
             return r.borrowID;
@@ -2053,8 +1869,7 @@ class RecordList {
         int  size()    { return count; }
         RecordNode* head() { return headPtr; }
 
-        // add to the tail so records keep their original file order
-        void addRecord(BookRecord r) {
+        void addRecord(BookRecord r) {   // add to the tail so records keep their original file order
             RecordNode* node = new RecordNode;
             node->data = r;
             node->next = nullptr;
@@ -2079,8 +1894,7 @@ class RecordList {
             count = 0;
         }
 
-        // insertion sort done directly on the linked nodes
-        void sortByField(int field) {
+        void sortByField(int field) {   // insertion sort done directly on the linked nodes
             if (headPtr == nullptr) return;
 
             RecordNode* sorted = nullptr;
@@ -2107,8 +1921,7 @@ class RecordList {
         }
 };
 
-// read every line of BorrowRecords.txt into the linked list
-void loadRecordsIntoList(RecordList& list) {
+void loadRecordsIntoList(RecordList& list) {   // read every line of BorrowRecords.txt into the linked list
     ifstream file("BorrowRecords.txt");
     if (!file.is_open()) return;
 
@@ -2124,8 +1937,7 @@ void loadRecordsIntoList(RecordList& list) {
     file.close();
 }
 
-// print the heading row used by the record tables
-void printRecordHeader() {
+void printRecordHeader() {   // print the heading row used by the record tables
     cout << left
          << setw(16) << "BorrowID"
          << setw(14) << "Customer"
@@ -2146,11 +1958,7 @@ void printRecordRow(BookRecord r) {
          << r.borrowStatus << endl;
 }
 
-// -------------------------------------------------------
-// View Borrow Records - Admin only
-// Display every record, search them or sort them by a field.
-// -------------------------------------------------------
-void viewBorrowRecords() {
+void viewBorrowRecords() {   // View Borrow Records - Admin only; Display every record, search them or sort them by a field.
     RecordList list;
     loadRecordsIntoList(list);
 
@@ -2174,15 +1982,13 @@ void viewBorrowRecords() {
 
         if (choice == 6) {
             editBorrowRecord();
-            // reload so the table reflects the change we just made
-            list.clear();
+            list.clear();   // reload so the table reflects the change we just made
             loadRecordsIntoList(list);
         } else if (choice == 1) {
             cout << "\nShowing " << list.size() << " record(s):" << endl;
             printRecordHeader();
             for (RecordNode* p = list.head(); p != nullptr; p = p->next)
                 printRecordRow(p->data);
-
         } else if (choice == 2 || choice == 3) {
             cout << "Enter keyword: ";
             string kw;
@@ -2200,25 +2006,19 @@ void viewBorrowRecords() {
             }
             if (!found)
                 cout << "No matching record found." << endl;
-
         } else if (choice == 4 || choice == 5) {
             list.sortByField(choice == 4 ? 0 : 2);
             cout << "\nRecords sorted." << endl;
             printRecordHeader();
             for (RecordNode* p = list.head(); p != nullptr; p = p->next)
                 printRecordRow(p->data);
-
         } else if (choice != 0) {
             cout << "Invalid choice. Please try again." << endl;
         }
     } while (choice != 0);
 }
 
-// -------------------------------------------------------
-// Edit a Borrow Record - Admin only
-// Lets staff fix the return date or status of a single record.
-// -------------------------------------------------------
-void editBorrowRecord() {
+void editBorrowRecord() {   // Edit a Borrow Record - Admin only; Lets staff fix the return date or status of a single record.
     cout << "\nEnter Borrow ID to edit (0 to cancel): ";
     string target;
     cin >> target;
@@ -2241,7 +2041,6 @@ void editBorrowRecord() {
     while (getline(readFile, bID, '|') && getline(readFile, custID, '|') &&
            getline(readFile, bkID, '|') && getline(readFile, bDate, '|') &&
            getline(readFile, rDate, '|') && getline(readFile, bStatus)) {
-
         if (bID == target && !edited) {
             cout << "Current return date: " << rDate << endl;
             cout << "Enter new return date (YYYY-MM-DD or - to keep): ";
@@ -2273,11 +2072,7 @@ void editBorrowRecord() {
         cout << "Borrow ID \"" << target << "\" not found." << endl;
 }
 
-// -------------------------------------------------------
-// Overdue Report - Admin only
-// Lists late records, totals the fines and saves them to a txt file.
-// -------------------------------------------------------
-void overdueReport() {
+void overdueReport() {   // Overdue Report - Admin only; Lists late records, totals the fines and saves them to a txt file.
     RecordList list;
     loadRecordsIntoList(list);
 
@@ -2332,11 +2127,7 @@ void overdueReport() {
     cout << "Report saved to OverdueReport.txt" << endl;
 }
 
-// -------------------------------------------------------
-// My Borrow History - Customer only
-// Shows only the records that belong to the logged in customer.
-// -------------------------------------------------------
-void myBorrowHistory(string currentCustomer) {
+void myBorrowHistory(string currentCustomer) {   // My Borrow History - Customer only; Shows only the records that belong to the logged in customer.
     RecordList list;
     loadRecordsIntoList(list);
 
@@ -2381,11 +2172,7 @@ void myBorrowHistory(string currentCustomer) {
         cout << "\nTotal records: " << mine << endl;
 }
 
-// -------------------------------------------------------
-// Check My Fines - Customer only
-// Adds up any late fees from the customer's own records.
-// -------------------------------------------------------
-void checkMyFines(string currentCustomer) {
+void checkMyFines(string currentCustomer) {   // Check My Fines - Customer only; Adds up any late fees from the customer's own records.
     RecordList list;
     loadRecordsIntoList(list);
 
@@ -2422,11 +2209,7 @@ void checkMyFines(string currentCustomer) {
         cout << "Total fine to pay: RM " << fixed << setprecision(2) << total << endl;
 }
 
-// -------------------------------------------------------
-// My Profile - Customer only
-// Lets a customer see their details and change their password.
-// -------------------------------------------------------
-void changeMyPassword(string currentCustomer) {
+void changeMyPassword(string currentCustomer) {   // My Profile - Customer only; Lets a customer see their details and change their password.
     int size = 0;
     CustomerAcc* list = loadCustomers(size);
     if (size == 0 || list == nullptr) {
@@ -2499,22 +2282,15 @@ void myProfile(string currentCustomer) {
             }
             if (!shown) cout << "Account not found." << endl;
             if (list != nullptr) delete[] list;
-
         } else if (choice == 2) {
             changeMyPassword(currentCustomer);
-
         } else if (choice != 0) {
             cout << "Invalid choice. Please try again." << endl;
         }
     } while (choice != 0);
 }
 
-// =======================================================
-// PART F - Book Reservations (Queue based)
-// A customer can queue for a book. When a copy comes back the
-// admin processes the queue in first-in-first-out order.
-// =======================================================
-struct Reservation {
+struct Reservation {   // A customer can queue for a book. When a copy comes back the; admin processes the queue in first-in-first-out order.
     string reservationID;
     string customerID;
     string bookID;
@@ -2565,10 +2341,7 @@ void saveReservations(Reservation* list, int size) {
     file.close();
 }
 
-// -------------------------------------------------------
-// Reserve Book - Customer only
-// -------------------------------------------------------
-void reserveBook(string currentCustomer) {
+void reserveBook(string currentCustomer) {   // Reserve Book - Customer only
     int size = 0;
     Book* bookList = LoadBooks(size);
 
@@ -2613,8 +2386,7 @@ void reserveBook(string currentCustomer) {
     string title = bookList[index].title;
     delete[] bookList;
 
-    // stop the same customer from reserving the same book twice
-    int rSize = 0;
+    int rSize = 0;   // stop the same customer from reserving the same book twice
     Reservation* rList = loadReservations(rSize);
     for (int i = 0; i < rSize; i++) {
         if (rList[i].customerID == currentCustomer &&
@@ -2636,10 +2408,7 @@ void reserveBook(string currentCustomer) {
     cout << "Reservation placed for '" << title << "'. You are in the queue." << endl;
 }
 
-// -------------------------------------------------------
-// My Reservations / Cancel Reservation - Customer only
-// -------------------------------------------------------
-void cancelReservation(string currentCustomer) {
+void cancelReservation(string currentCustomer) {   // My Reservations / Cancel Reservation - Customer only
     int size = 0;
     Reservation* list = loadReservations(size);
 
@@ -2713,11 +2482,7 @@ void myReservations(string currentCustomer) {
         cancelReservation(currentCustomer);
 }
 
-// -------------------------------------------------------
-// Manage Reservations - Admin only
-// Processing serves the waiting queue in FIFO order using ADTqueue.
-// -------------------------------------------------------
-void viewAllReservations() {
+void viewAllReservations() {   // Manage Reservations - Admin only; Processing serves the waiting queue in FIFO order using ADTqueue.
     int size = 0;
     Reservation* list = loadReservations(size);
 
@@ -2761,8 +2526,7 @@ void processReservation() {
         return;
     }
 
-    // load every waiting reservation for this book into the queue, in order
-    ADTqueue waiting;
+    ADTqueue waiting;   // load every waiting reservation for this book into the queue, in order
     bool anyWaiting = false;
     for (int i = 0; i < size; i++) {
         if (list[i].bookID == id && list[i].status == "Waiting") {
@@ -2777,8 +2541,7 @@ void processReservation() {
         return;
     }
 
-    // serve the front of the queue - that customer is next in line
-    string nextID = waiting.serve();
+    string nextID = waiting.serve();   // serve the front of the queue - that customer is next in line
 
     for (int i = 0; i < size; i++) {
         if (list[i].reservationID == nextID) {
@@ -2793,8 +2556,7 @@ void processReservation() {
     delete[] list;
 }
 
-// remove every reservation that is no longer waiting to keep the file tidy
-void clearCompletedReservations() {
+void clearCompletedReservations() {   // remove every reservation that is no longer waiting to keep the file tidy
     int size = 0;
     Reservation* list = loadReservations(size);
 
@@ -2856,15 +2618,7 @@ void manageReservations() {
     } while (choice != 0);
 }
 
-// =======================================================
-// PART G - Extra actions: statistics, renew and force return
-// =======================================================
-
-// -------------------------------------------------------
-// Book Statistics - Admin only
-// A quick breakdown of the collection by stock and category.
-// -------------------------------------------------------
-void bookStatistics() {
+void bookStatistics() {   // Book Statistics - Admin only; A quick breakdown of the collection by stock and category.
     int size = 0;
     Book* bookList = LoadBooks(size);
 
@@ -2889,8 +2643,7 @@ void bookStatistics() {
     cout << "Available titles    : " << available << endl;
     cout << "Out of stock titles : " << outOfStock << endl;
 
-    // count how many titles fall under each category without using STL maps
-    cout << "\n-- Titles per Category --" << endl;
+    cout << "\n-- Titles per Category --" << endl;   // count how many titles fall under each category without using STL maps
     bool* counted = new bool[size];
     for (int i = 0; i < size; i++) counted[i] = false;
 
@@ -2914,11 +2667,7 @@ void bookStatistics() {
     cout << "=====================================" << endl;
 }
 
-// -------------------------------------------------------
-// Renew Book - Customer only
-// Resets the 14 day loan clock on a book the customer still holds.
-// -------------------------------------------------------
-void renewBook(string currentCustomer) {
+void renewBook(string currentCustomer) {   // Renew Book - Customer only; Resets the 14 day loan clock on a book the customer still holds.
     cout << "\n=== Renew Book ===" << endl;
     cout << "Enter Book ID to renew (0 to cancel): ";
     string id;
@@ -2942,11 +2691,9 @@ void renewBook(string currentCustomer) {
     while (getline(readFile, bID, '|') && getline(readFile, custID, '|') &&
            getline(readFile, bkID, '|') && getline(readFile, bDate, '|') &&
            getline(readFile, rDate, '|') && getline(readFile, bStatus)) {
-
         if (custID == currentCustomer && bkID == id &&
             bStatus == "Borrowed" && !renewed) {
-            // push the borrow date forward to today so the due date is reset
-            tempFile << bID << "|" << custID << "|" << bkID << "|"
+            tempFile << bID << "|" << custID << "|" << bkID << "|"   // push the borrow date forward to today so the due date is reset
                      << SYSTEM_TODAY << "|" << rDate << "|" << bStatus << endl;
             renewed = true;
         } else {
@@ -2968,11 +2715,7 @@ void renewBook(string currentCustomer) {
         cout << "No active loan found for that book under your account." << endl;
 }
 
-// -------------------------------------------------------
-// Force Return - Admin only
-// Lets staff return a book on behalf of a customer.
-// -------------------------------------------------------
-void forceReturn() {
+void forceReturn() {   // Force Return - Admin only; Lets staff return a book on behalf of a customer.
     cout << "\n=== Force Return (Admin) ===" << endl;
     cout << "Enter Customer username (0 to cancel): ";
     string cust;
@@ -3019,7 +2762,6 @@ void forceReturn() {
     while (getline(readFile, bID, '|') && getline(readFile, custID, '|') &&
            getline(readFile, bkID, '|') && getline(readFile, bDate, '|') &&
            getline(readFile, rDate, '|') && getline(readFile, bStatus)) {
-
         if (custID == cust && bkID == id && bStatus == "Borrowed" && !updated) {
             tempFile << bID << "|" << custID << "|" << bkID << "|"
                      << bDate << "|" << SYSTEM_TODAY << "|Returned" << endl;
@@ -3039,8 +2781,7 @@ void forceReturn() {
         SaveBooks(bookList, size);
         cout << "Book returned on behalf of " << cust << "." << endl;
     } else {
-        // no matching loan, so undo the stock change we made earlier
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {   // no matching loan, so undo the stock change we made earlier
             if (bookList[i].bookID == id) {
                 bookList[i].stock--;
                 if (bookList[i].stock == 0)
@@ -3055,12 +2796,7 @@ void forceReturn() {
     delete[] bookList;
 }
 
-// -------------------------------------------------------
-// Top Borrowed Books - Admin only
-// Counts how many times each book ID appears in the records
-// and prints them from the most borrowed to the least.
-// -------------------------------------------------------
-void topBorrowedBooks() {
+void topBorrowedBooks() {   // Top Borrowed Books - Admin only; Counts how many times each book ID appears in the records; and prints them from the most borrowed to the least.
     RecordList list;
     loadRecordsIntoList(list);
 
@@ -3074,8 +2810,7 @@ void topBorrowedBooks() {
     int*    counts = new int[total];
     int unique = 0;
 
-    // tally every borrow record into a small unique list of book IDs
-    for (RecordNode* p = list.head(); p != nullptr; p = p->next) {
+    for (RecordNode* p = list.head(); p != nullptr; p = p->next) {   // tally every borrow record into a small unique list of book IDs
         int found = -1;
         for (int i = 0; i < unique; i++) {
             if (ids[i] == p->data.bookID) {
@@ -3093,8 +2828,7 @@ void topBorrowedBooks() {
         }
     }
 
-    // simple selection sort so the highest count sits at the top
-    for (int i = 0; i < unique - 1; i++) {
+    for (int i = 0; i < unique - 1; i++) {   // simple selection sort so the highest count sits at the top
         int maxIndex = i;
         for (int j = i + 1; j < unique; j++) {
             if (counts[j] > counts[maxIndex])
@@ -3125,11 +2859,7 @@ void topBorrowedBooks() {
     cout << "========================================" << endl;
 }
 
-// =======================================================
-// PART H - Manage Admin Accounts (Admin only)
-// Same idea as the customer manager but for the Admin.txt file.
-// =======================================================
-struct AdminAcc {
+struct AdminAcc {   // Same idea as the customer manager but for the Admin.txt file.
     string username;
     string password;
     string role;
@@ -3307,12 +3037,7 @@ void manageAdmins() {
     } while (choice != 0);
 }
 
-// -------------------------------------------------------
-// Undo Last Delete - Admin only
-// Pops the most recently deleted book off the stack and writes
-// it back into Books.txt.
-// -------------------------------------------------------
-void restoreLastDeleted() {
+void restoreLastDeleted() {   // Undo Last Delete - Admin only; Pops the most recently deleted book off the stack and writes; it back into Books.txt.
     if (deletedBooks.isEmpty()) {
         cout << "\nNothing to undo. No book was deleted this session." << endl;
         return;
@@ -3338,18 +3063,13 @@ void restoreLastDeleted() {
     cout << "Book '" << b.title << "' restored successfully." << endl;
 }
 
-// -------------------------------------------------------
-// Display Books with a filter
-// Lets the user list everything, or only one category, or only
-// the books that are currently in stock.
-// -------------------------------------------------------
-void displayBooksFiltered() {
+void displayBooksFiltered() {   // Display Books with a filter; Lets the user list everything, or only one category, or only; the books that are currently in stock.
     cout << "\n=== Display Books ===" << endl;
     cout << "1. Show All" << endl;
     cout << "2. Show by Category" << endl;
     cout << "3. Show Available Only" << endl;
     cout << "Enter choice: ";
-    
+
     MBooks b;
     int choice;
     cin >> choice;
