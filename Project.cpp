@@ -478,7 +478,7 @@ void SaveBooks(Book* bookList, int size){
 // Borrow Book (Wen Zhe's part)
 // -------------------------------------------------------
 void borrowBook(string currentCustomer) {
-    cin.ignore();
+    cin.ignore(10000, '\n');
     cout << "\n== Borrow Book ==" << endl;
 
     int size = 0;
@@ -542,7 +542,7 @@ void borrowBook(string currentCustomer) {
 // Return Book (Wen Zhe's part)
 // -------------------------------------------------------
 void returnBook(string currentCustomer) {
-    cin.ignore();
+    cin.ignore(10000, '\n');
     cout << "\n=== Return Book ===" << endl;
 
     string id;
@@ -773,7 +773,7 @@ public:
         newBook.bookID = to_string(maxID + 1);
         cout << "Auto-generated Book ID: " << newBook.bookID << endl;
         
-        cin.ignore();
+        cin.ignore(10000, '\n');
         cout << "Enter Title: "; getline(cin, newBook.title);
         cout << "Enter Author: "; getline(cin, newBook.author);
         cout << "Enter Category: "; getline(cin, newBook.category);
@@ -833,7 +833,7 @@ public:
             if(bookList[i].bookID == id){
                 found = true;
                 cout<<"\nBook Found! Current Title: "<<bookList[i].title<<endl;
-                cin.ignore();
+                cin.ignore(10000, '\n');
                 
                 cout<<"Enter New Title (or press Enter to keep current): ";
                 string temp;
@@ -1390,7 +1390,7 @@ void searchBook(string username, bool isAdmin) {
 
     int searchChoice;
     cin >> searchChoice;
-    cin.ignore();
+    cin.ignore(10000, '\n');
 
     if (searchChoice == 1 || searchChoice == 2 || searchChoice == 3) {
 
