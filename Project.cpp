@@ -772,7 +772,7 @@ void customerMenu(string username)
 			case 8: myBorrowHistory(username); break;
 			case 9: checkMyFines(username); break;
 			case 10: myProfile(username); break;
-			case 11: viewReport(); break; // Tsui Hern's part
+			case 11: viewReport(); break; // Zhong Bao's part
 			case 0: break;
 			default: cout << "\nInvalid choice. Please try again." << endl;
 		}
@@ -824,7 +824,7 @@ void adminMenu(string username)
 			case 13: topBorrowedBooks(); break;
 			case 14: manageAdmins(); break;
 			case 15: restoreLastDeleted(); break;
-			case 16: generateReport(); break; // Tsui Hern's part
+			case 16: generateReport(); break; // Zhong Bao's part
 			case 0: break;
 			default: cout << "\nInvalid choice. Please try again." << endl;
 		}
