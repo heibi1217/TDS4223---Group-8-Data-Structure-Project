@@ -198,17 +198,29 @@ BookStack deletedBooks;
 // -------------------------------------------------------
 // Account base class and subclasses
 // -------------------------------------------------------
-class Account
+// everyone in the system is a person first, so the shared identity
+// (the username) lives here. Account then builds on it with the login info.
+class Person
 {
 	protected:
 		string username;
+
+	public:
+		Person() { username = ""; }
+		~Person() {}
+
+		string getUsername() { return username; }
+};
+
+class Account : public Person
+{
+	protected:
 		string password;
 		string role;
 
 	public:
 		Account()
 		{
-			username = "";
 			password = "";
 			role = "";
 		}
@@ -219,7 +231,6 @@ class Account
 		friend void displayGuest(const Account& a);
 		friend class Admin;
 
-		string getUsername() { return username; }
 		string getPassword() { return password; }
 		string getRole() { return role; }
 };
